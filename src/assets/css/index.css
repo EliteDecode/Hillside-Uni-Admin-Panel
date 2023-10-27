@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.MuiSvgIcon-root path {
+  color: #5e0001 !important;
+}
