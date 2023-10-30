@@ -14,6 +14,8 @@ import ProtectedRoutes from "layouts/ProtectedRoutes";
 import LoggedInRoute from "layouts/LoggedInRoute";
 import { AuthProvider } from "context/authContext";
 import { EventProvider } from "context/eventsContext";
+import { NewsProvider } from "context/newsContext";
+import { CalenderProvider } from "context/calenderContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -21,18 +23,21 @@ root.render(
   <BrowserRouter>
     <AuthProvider>
       <EventProvider>
-        <Routes>
-          <Route element={<ProtectedRoutes />}>
-            <Route path="/admin/*" element={<AdminLayout />} />
-            <Route
-              path="/"
-              element={<Navigate to="/admin/dashboard" replace />}
-            />
-          </Route>
-          <Route element={<LoggedInRoute />}>
-            <Route path="/login" element={<Login />} />
-          </Route>
-        </Routes>
+        <NewsProvider>
+          <CalenderProvider>
+            <Routes>
+              <Route element={<ProtectedRoutes />}>
+                <Route path="/admin/*" element={<AdminLayout />} />
+                <Route
+                  path="/"
+                  element={<Navigate to="/admin/dashboard" replace />}
+                />
+              </Route>
+
+              <Route path="/login" element={<Login />} />
+            </Routes>
+          </CalenderProvider>
+        </NewsProvider>
       </EventProvider>
     </AuthProvider>
   </BrowserRouter>

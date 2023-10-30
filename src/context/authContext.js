@@ -11,8 +11,7 @@ const AuthProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
 
   useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem("Admin");
-    setAdmin(JSON.parse(userFromLocalStorage));
+    setAdmin(JSON.parse(localStorage.getItem("Admin")));
   }, []);
 
   const navigate = useNavigate();

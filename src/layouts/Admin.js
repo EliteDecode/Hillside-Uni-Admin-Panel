@@ -9,7 +9,10 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
 import routes from "routes.js";
-import AddEvents from "views/AddEvents";
+import AddEvents from "views/Events/AddEvents";
+import EditEvents from "views/Events/EditEvents";
+import AddNews from "views/News/AddNews";
+import EditNews from "views/News/EditNews";
 
 var ps;
 
@@ -62,6 +65,9 @@ function Dashboard(props) {
             );
           })}
           <Route path="/events/add-events" element={<AddEvents />} />
+          <Route path="/events/:eventId" element={<EditEvents />} />
+          <Route path="/news/add-news" element={<AddNews />} />
+          <Route path="/news/:newsId" element={<EditNews />} />
         </Routes>
         <Footer fluid />
       </div>

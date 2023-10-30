@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "@mui/material";
 import { useAuthGlobalContext } from "context/authContext";
+import { useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -16,6 +17,14 @@ const initialValues = {
 
 const Login = () => {
   const { loginAdmin } = useAuthGlobalContext();
+  const admin = localStorage.getItem("Admin");
+  const Navigate = useNavigate();
+
+  useEffect(() => {
+    if (admin) {
+      Navigate("/admin/dashboard");
+    }
+  }, []);
 
   const handleSubmit = (values, { setSubmitting }) => {
     loginAdmin(values);

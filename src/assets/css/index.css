@@ -5,3 +5,7 @@
 .MuiSvgIcon-root path {
   color: #5e0001 !important;
 }
+
+.ck-editor {
+  height: 300px !important;
+}

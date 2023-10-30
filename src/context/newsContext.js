@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 
 const AppContext = React.createContext();
 
-const EventProvider = ({ children }) => {
+const NewsProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
-  const [events, setEvents] = useState(null);
-  const [event, setEvent] = useState(null);
+  const [news, setNews] = useState(null);
+  const [singleNews, setSingleNews] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const EventProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const addEvents = async (admindata) => {
+  const addNews = async (admindata) => {
     console.log(admin.token);
 
     const config = {
@@ -31,16 +31,16 @@ const EventProvider = ({ children }) => {
 
     try {
       const data = await axios.post(
-        `${process.env.REACT_APP_API_URL}/events/${admin.data.id}`,
+        `${process.env.REACT_APP_API_URL}/news/${admin.data.id}`,
         admindata,
         config
       );
 
       // Check if the login was successful
       if (data) {
-        toast.success("Events added successfully", {
+        toast.success("News added successfully", {
           onClose: () => {
-            navigate("/admin/events");
+            navigate("/admin/news");
           },
         });
 
@@ -55,14 +55,15 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const getEvents = async () => {
+  const getNews = async () => {
     setLoading(true);
     try {
       const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/events/published-events`
+        `${process.env.REACT_APP_API_URL}/news/published-news`
       );
-      setEvents(data?.data);
+      setNews(data?.data);
       setLoading(false);
+      console.log(data);
 
       return data;
     } catch (error) {
@@ -74,13 +75,13 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const getSingleEvents = async (id) => {
+  const getSingleNews = async (id) => {
     setLoading(true);
     try {
       const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/events/${id}`
+        `${process.env.REACT_APP_API_URL}/news/${id}`
       );
-      setEvent(data.data[0]);
+      setSingleNews(data.data[0]);
       setLoading(false);
 
       return data;
@@ -91,7 +92,7 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const deleteSingleEvents = async (eventId) => {
+  const deleteSingleNews = async (newId) => {
     const config = {
       headers: {
         Authorization: `Bearer ${admin.token}`,
@@ -102,13 +103,13 @@ const EventProvider = ({ children }) => {
     console.log("we are here");
     try {
       const data = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/events/delete-events/${eventId}/${admin.data.id}`,
+        `${process.env.REACT_APP_API_URL}/news/delete-news/${newId}/${admin.data.id}`,
 
         config
       );
 
       if (data) {
-        toast.success("Events updated successfully", {
+        toast.success("News updated successfully", {
           onClose: () => {
             window.location.reload();
             setLoading(false);
@@ -122,7 +123,7 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const editEvents = async (eventData, eventId) => {
+  const editNews = async (newsData, newId) => {
     const config = {
       headers: {
         Authorization: `Bearer ${admin.token}`,
@@ -131,8 +132,8 @@ const EventProvider = ({ children }) => {
 
     try {
       const data = await axios.put(
-        `${process.env.REACT_APP_API_URL}/events/edit-events/${eventId}/${admin.data.id}`,
-        eventData,
+        `${process.env.REACT_APP_API_URL}/news/edit-news/${newId}/${admin.data.id}`,
+        newsData,
         config
       );
 
@@ -140,7 +141,7 @@ const EventProvider = ({ children }) => {
       // Check if the login was successful
       // Check if the login was successful
       if (data) {
-        toast.success("Events deleted successfully", {
+        toast.success("News deleted successfully", {
           onClose: () => {
             navigate("/admin/dashboard");
           },
@@ -160,14 +161,14 @@ const EventProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        addEvents,
-        getSingleEvents,
-        getEvents,
-        editEvents,
-        deleteSingleEvents,
-        events,
+        addNews,
+        getSingleNews,
+        getNews,
+        editNews,
+        deleteSingleNews,
+        news,
         loading,
-        event,
+        singleNews,
       }}>
       {children}
       <ToastContainer />
@@ -175,8 +176,8 @@ const EventProvider = ({ children }) => {
   );
 };
 
-export const useEventGlobalContext = () => {
+export const useNewsGlobalContext = () => {
   return useContext(AppContext);
 };
 
-export { AppContext, EventProvider };
+export { AppContext, NewsProvider };

@@ -1,10 +1,9 @@
 import Dashboard from "views/Dashboard.js";
 import UserPage from "views/User.js";
-import Events from "views/Events";
-import Calender from "views/Calender";
-import News from "views/News";
+import Events from "views/Events/Events";
+import Calender from "views/Calender/Calender";
+import News from "views/News/News";
 import Settings from "views/Settings";
-import AddEvents from "views/AddEvents";
 import Logout from "views/Logout";
 
 var routes = [

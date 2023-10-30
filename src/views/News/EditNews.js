@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import Header from "../components/Header";
+import React, { useEffect, useRef, useState } from "react";
+import Header from "../../components/Header";
 import SendIcon from "@mui/icons-material/Send";
 import { Card, CardBody, Row, Col } from "reactstrap";
 import { useFormik } from "formik";
@@ -12,48 +12,72 @@ import {
   Box,
   Typography,
   Grid,
+  Select,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  FormHelperText,
 } from "@mui/material";
-import eventImg from "../assets/img/event.png";
 import { UploadFile } from "@mui/icons-material";
-import { useEventGlobalContext } from "context/eventsContext";
+import { useNewsGlobalContext } from "context/newsContext";
+import { useParams } from "react-router-dom";
+import DisplayCards from "components/DisplayCards";
 
 const validationSchema = Yup.object({
-  title: Yup.string().required("Title is required"),
-  description: Yup.string().required("Description is required"),
-  eventImage: Yup.mixed().required("Event Image is required"),
-  date: Yup.date().required("Date is required"),
+  title: Yup.string(),
+  description: Yup.string(),
+
+  publishNews: Yup.string().required(
+    "You must confirm if the news is published or not"
+  ),
 });
 
-function AddEvents() {
+function EditNews() {
   const [imageURL, setImageURL] = useState(null);
-  const { addEvents } = useEventGlobalContext();
+  const { getSingleNews, singleNews, editNews } = useNewsGlobalContext();
+
+  const { newsId } = useParams();
+
+  console.log(
+    `${process.env.REACT_APP_API_URL}/uploads/images/${singleNews?.image}`
+  );
+
+  useEffect(() => {
+    getSingleNews(newsId);
+  }, []);
+  console.log(singleNews);
+
+  const img = `http://localhost:5000/hust/api/v1/uploads/images/${singleNews?.image}`;
+
   const formik = useFormik({
     initialValues: {
       title: "",
       description: "",
-      date: "",
-      eventImage: null,
-      publishEvent: false,
+      newsImage: null,
+      publishNews: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const eventData = new FormData();
+      const newsData = new FormData();
+      newsData.append("cover_Image", values.newsImage);
 
-      eventData.append("title", values.title);
-      eventData.append("description", values.description);
-      eventData.append("cover_Image", values.eventImage);
-      eventData.append("publish", values.publishEvent);
-      eventData.append("date", values.date);
+      const updates = [
+        { columnName: "title", newValue: values.title },
+        { columnName: "description", newValue: values.description },
+        { columnName: "publish", newValue: values.publishNews },
+      ].filter((update) => update.newValue !== "");
+      newsData.append("updates", JSON.stringify(updates));
 
-      addEvents(eventData);
+      console.log(updates);
+      editNews(newsData, newsId);
     },
   });
 
   const fileInputRef = useRef();
 
-  const handleFileInputChange = (event) => {
-    const file = event.target.files[0];
-    formik.setFieldValue("eventImage", file);
+  const handleFileInputChange = (news) => {
+    const file = news?.target.files[0];
+    formik.setFieldValue("newsImage", file);
     if (file) {
       // Display the selected image
       const url = URL.createObjectURL(file);
@@ -65,19 +89,20 @@ function AddEvents() {
       <div className="content">
         <Row>
           <Col md="12">
-            <Header title="Add Events" />
-
+            <Header title="Edit News" />
             <Card className="demo-icons">
               <CardBody className="all-icons">
                 <Grid container>
-                  <Grid sm={12} md={6} className="p-4">
+                  <Grid sm={12} md={6} className="sm:p-4 p-1">
                     <form
                       onSubmit={formik.handleSubmit}
-                      className="p-4 space-y-4">
+                      className="sm:p-4 p-1 space-y-4">
                       <TextField
                         label="Title"
                         variant="outlined"
                         fullWidth
+                        placeholder={singleNews?.title}
+                        focused={singleNews ? true : false}
                         id="title"
                         name="title"
                         value={formik.values.title}
@@ -92,7 +117,9 @@ function AddEvents() {
                         label="Description"
                         variant="outlined"
                         fullWidth
+                        focused={singleNews ? true : false}
                         id="description"
+                        placeholder={singleNews?.description}
                         name="description"
                         value={formik.values.description}
                         onChange={formik.handleChange}
@@ -106,50 +133,46 @@ function AddEvents() {
                         }
                       />
 
-                      <TextField
-                        label="Event's Date"
-                        variant="outlined"
-                        fullWidth
-                        id="date"
-                        type="date"
-                        name="date"
-                        value={formik.values.date}
-                        onChange={formik.handleChange}
+                      <FormControl
+                        className="w-full"
                         error={
-                          formik.touched.date && Boolean(formik.errors.date)
-                        }
-                        helperText={formik.touched.date && formik.errors.date}
-                      />
+                          formik.touched.publishNews &&
+                          formik.errors.publishNews
+                        }>
+                        <InputLabel id="publishNews-label">
+                          Publication Status
+                        </InputLabel>
+                        <Select
+                          labelId="publishNews-label"
+                          label="publishNews-label"
+                          id="publishNews"
+                          name="publishNews"
+                          value={formik.values.publishNews}
+                          onChange={formik.handleChange}>
+                          <MenuItem value="">Select</MenuItem>
+                          <MenuItem value="1">Published</MenuItem>
+                          <MenuItem value="0">Unpublished</MenuItem>
+                        </Select>
+                        <FormHelperText>
+                          {formik.touched.publishNews &&
+                            formik.errors.publishNews}
+                        </FormHelperText>
+                      </FormControl>
 
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            id="publishEvent"
-                            name="publishEvent"
-                            labelStyle={{ color: "#000" }}
-                            iconStyle={{ fill: "white", background: "#000" }}
-                            checked={formik.values.publishEvent}
-                            onChange={formik.handleChange}
-                          />
-                        }
-                        label="Publish Event"
-                      />
                       <Box>
-                        {imageURL && (
-                          <img src={imageURL} alt="Selected Event" />
-                        )}
+                        {imageURL && <img src={imageURL} alt="Selected News" />}
                         <input
                           type="file"
                           accept="image/*"
                           style={{ display: "none" }}
                           ref={fileInputRef}
                           onChange={handleFileInputChange}
-                          id="eventImage"
-                          name="eventImage"
+                          id="newsImage"
+                          name="newsImage"
                         />
                         {imageURL ? (
                           <label
-                            htmlFor="eventImage"
+                            htmlFor="newsImage"
                             className="sm:w-[38%] w-[100%] cursor-pointer">
                             <Box
                               className=" flex items-center space-x-2 px-2 justify-center rounded-sm shadow-md mt-2  py-2 w-full"
@@ -163,13 +186,13 @@ function AddEvents() {
                               }}>
                               <UploadFile />
                               <Typography variant="body1">
-                                Change Event Image
+                                Change News Image
                               </Typography>
                             </Box>
                           </label>
                         ) : (
                           <label
-                            htmlFor="eventImage"
+                            htmlFor="newsImage"
                             className="w-full cursor-pointer">
                             <Box
                               className=" py-28 w-full"
@@ -180,16 +203,16 @@ function AddEvents() {
                               }}>
                               <UploadFile />
                               <Typography variant="body1">
-                                Select Event Image
+                                Select News Image
                               </Typography>
                             </Box>
                           </label>
                         )}
 
-                        {formik.touched.eventImage &&
-                          formik.errors.eventImage && (
+                        {formik.touched.newsImage &&
+                          formik.errors.newsImage && (
                             <Typography color="error" variant="body2">
-                              {formik.errors.eventImage}
+                              {formik.errors.newsImage}
                             </Typography>
                           )}
                       </Box>
@@ -207,12 +230,18 @@ function AddEvents() {
                             border: "1px solid #5e0001",
                           },
                         }}>
-                        Add Event
+                        Edit News
                       </Button>
                     </form>
                   </Grid>
                   <Grid sm={12} md={6} className="">
-                    {/* <img src={eventImg} /> */}
+                    <DisplayCards
+                      title={singleNews?.title}
+                      description={singleNews?.description}
+                      date={singleNews?.singleNewsDate}
+                      isPublished={singleNews?.publish === 1 ? true : false}
+                      img={img}
+                    />
                   </Grid>
                 </Grid>
               </CardBody>
@@ -224,4 +253,4 @@ function AddEvents() {
   );
 }
 
-export default AddEvents;
+export default EditNews;

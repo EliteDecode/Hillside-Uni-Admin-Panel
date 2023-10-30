@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 
 const AppContext = React.createContext();
 
-const EventProvider = ({ children }) => {
+const CalenderProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
-  const [events, setEvents] = useState(null);
-  const [event, setEvent] = useState(null);
+  const [calender, setCalender] = useState(null);
+  const [singleCalender, setSingleCalender] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const EventProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const addEvents = async (admindata) => {
+  const addCalenders = async (admindata) => {
     console.log(admin.token);
 
     const config = {
@@ -31,16 +31,16 @@ const EventProvider = ({ children }) => {
 
     try {
       const data = await axios.post(
-        `${process.env.REACT_APP_API_URL}/events/${admin.data.id}`,
+        `${process.env.REACT_APP_API_URL}/academic-calender/${admin.data.id}`,
         admindata,
         config
       );
 
       // Check if the login was successful
       if (data) {
-        toast.success("Events added successfully", {
+        toast.success("Calenders added successfully", {
           onClose: () => {
-            navigate("/admin/events");
+            navigate("/admin/calenders");
           },
         });
 
@@ -55,13 +55,13 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const getEvents = async () => {
+  const getAllCalender = async () => {
     setLoading(true);
     try {
       const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/events/published-events`
+        `${process.env.REACT_APP_API_URL}/academic-calender/published-academic-calender`
       );
-      setEvents(data?.data);
+      setCalender(data?.data);
       setLoading(false);
 
       return data;
@@ -74,13 +74,13 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const getSingleEvents = async (id) => {
+  const getSingleCalenders = async (id) => {
     setLoading(true);
     try {
       const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/events/${id}`
+        `${process.env.REACT_APP_API_URL}/academic-calender/${id}`
       );
-      setEvent(data.data[0]);
+      setSingleCalender(data.data[0]);
       setLoading(false);
 
       return data;
@@ -91,7 +91,7 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const deleteSingleEvents = async (eventId) => {
+  const deleteSingleCalender = async (calenderId) => {
     const config = {
       headers: {
         Authorization: `Bearer ${admin.token}`,
@@ -102,13 +102,13 @@ const EventProvider = ({ children }) => {
     console.log("we are here");
     try {
       const data = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/events/delete-events/${eventId}/${admin.data.id}`,
+        `${process.env.REACT_APP_API_URL}/academic-calender/delete-calenders/${calenderId}/${admin.data.id}`,
 
         config
       );
 
       if (data) {
-        toast.success("Events updated successfully", {
+        toast.success("Calenders updated successfully", {
           onClose: () => {
             window.location.reload();
             setLoading(false);
@@ -122,7 +122,7 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const editEvents = async (eventData, eventId) => {
+  const editSingleCalender = async (calenderData, calenderId) => {
     const config = {
       headers: {
         Authorization: `Bearer ${admin.token}`,
@@ -131,16 +131,15 @@ const EventProvider = ({ children }) => {
 
     try {
       const data = await axios.put(
-        `${process.env.REACT_APP_API_URL}/events/edit-events/${eventId}/${admin.data.id}`,
-        eventData,
+        `${process.env.REACT_APP_API_URL}/academic-calender/edit-calenders/${calenderId}/${admin.data.id}`,
+        calenderData,
         config
       );
 
       console.log(data);
-      // Check if the login was successful
-      // Check if the login was successful
+
       if (data) {
-        toast.success("Events deleted successfully", {
+        toast.success("Calenders deleted successfully", {
           onClose: () => {
             navigate("/admin/dashboard");
           },
@@ -160,14 +159,14 @@ const EventProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        addEvents,
-        getSingleEvents,
-        getEvents,
-        editEvents,
-        deleteSingleEvents,
-        events,
+        addCalenders,
+        getSingleCalenders,
+        getAllCalender,
+        editSingleCalender,
+        deleteSingleCalender,
+        calender,
         loading,
-        event,
+        singleCalender,
       }}>
       {children}
       <ToastContainer />
@@ -175,8 +174,8 @@ const EventProvider = ({ children }) => {
   );
 };
 
-export const useEventGlobalContext = () => {
+export const useCalenderGlobalContext = () => {
   return useContext(AppContext);
 };
 
-export { AppContext, EventProvider };
+export { AppContext, CalenderProvider };
