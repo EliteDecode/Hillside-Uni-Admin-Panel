@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 
 const AppContext = React.createContext();
 
-const EventProvider = ({ children }) => {
+const GalleryProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
-  const [events, setEvents] = useState(null);
-  const [event, setEvent] = useState(null);
+  const [gallery, setGallery] = useState(null);
+  const [singleGallery, setSingleGallery] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -20,9 +20,7 @@ const EventProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const addEvents = async (admindata) => {
-    console.log(admin.token);
-
+  const addGallery = async (admindata) => {
     const config = {
       headers: {
         Authorization: `Bearer ${admin.token}`,
@@ -31,16 +29,16 @@ const EventProvider = ({ children }) => {
 
     try {
       const data = await axios.post(
-        `${process.env.REACT_APP_API_URL}/events/${admin.data.id}`,
+        `${process.env.REACT_APP_API_URL}/gallery/${admin.data.id}`,
         admindata,
         config
       );
 
+      // Check if the login was successful
       if (data) {
-        toast.success("Events added successfully", {
+        toast.success("Image added to gallery successfully", {
           onClose: () => {
-            navigate("/admin/events");
-            // console.log("he");
+            navigate("/admin/gallery");
           },
         });
 
@@ -55,14 +53,15 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const getEvents = async () => {
+  const getGallery = async () => {
     setLoading(true);
     try {
       const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/events/published-events`
+        `${process.env.REACT_APP_API_URL}/gallery/published-gallery`
       );
-      setEvents(data?.data);
+      setGallery(data?.data);
       setLoading(false);
+      console.log(data);
 
       return data;
     } catch (error) {
@@ -74,14 +73,15 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const getSingleEvents = async (id) => {
+  const getSingleGallery = async (id) => {
     setLoading(true);
     try {
       const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/events/${id}`
+        `${process.env.REACT_APP_API_URL}/gallery/${id}`
       );
-      setEvent(data.data[0]);
+      setSingleGallery(data.data[0]);
       setLoading(false);
+      console.log(data);
 
       return data;
     } catch (error) {
@@ -91,7 +91,7 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const deleteSingleEvents = async (eventId) => {
+  const deleteSingleGallery = async (newId) => {
     const config = {
       headers: {
         Authorization: `Bearer ${admin.token}`,
@@ -102,13 +102,13 @@ const EventProvider = ({ children }) => {
     console.log("we are here");
     try {
       const data = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/events/delete-events/${eventId}/${admin.data.id}`,
+        `${process.env.REACT_APP_API_URL}/gallery/delete-gallery/${newId}/${admin.data.id}`,
 
         config
       );
 
       if (data) {
-        toast.success("Events updated successfully", {
+        toast.success("Gallery updated successfully", {
           onClose: () => {
             window.location.reload();
             setLoading(false);
@@ -122,7 +122,7 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const editEvents = async (eventData, eventId) => {
+  const editGallery = async (galleryData, newId) => {
     const config = {
       headers: {
         Authorization: `Bearer ${admin.token}`,
@@ -131,28 +131,23 @@ const EventProvider = ({ children }) => {
 
     try {
       const data = await axios.put(
-        `${process.env.REACT_APP_API_URL}/events/edit-events/${eventId}/${admin.data.id}`,
-        eventData,
+        `${process.env.REACT_APP_API_URL}/gallery/edit-gallery/${newId}/${admin.data.id}`,
+        galleryData,
         config
       );
-
-      console.log(data);
-      // Check if the login was successful
-      // Check if the login was successful
       if (data) {
-        toast.success("Events deleted successfully", {
+        toast.success("Gallery updated successfully", {
           onClose: () => {
-            navigate("/admin/dashboard");
+            navigate("/admin/gallery");
           },
         });
-
-        console.log(data);
 
         return data;
       }
     } catch (error) {
-      // Display an error toast
+      console.log(error);
       toast.error(error.response.data.error);
+      toast.error(error.message);
       toast.error(error.response.data?.message);
     }
   };
@@ -160,14 +155,14 @@ const EventProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        addEvents,
-        getSingleEvents,
-        getEvents,
-        editEvents,
-        deleteSingleEvents,
-        events,
+        addGallery,
+        getSingleGallery,
+        getGallery,
+        editGallery,
+        deleteSingleGallery,
+        gallery,
         loading,
-        event,
+        singleGallery,
       }}>
       {children}
       <ToastContainer />
@@ -175,8 +170,8 @@ const EventProvider = ({ children }) => {
   );
 };
 
-export const useEventGlobalContext = () => {
+export const useGalleryGlobalContext = () => {
   return useContext(AppContext);
 };
 
-export { AppContext, EventProvider };
+export { AppContext, GalleryProvider };

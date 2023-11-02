@@ -13,6 +13,11 @@ import AddEvents from "views/Events/AddEvents";
 import EditEvents from "views/Events/EditEvents";
 import AddNews from "views/News/AddNews";
 import EditNews from "views/News/EditNews";
+import ViewCalender from "views/Calender/ViewCalender";
+import AddCalender from "views/Calender/AddCalender";
+import EditCalender from "views/Calender/EditCalender";
+import AddGallery from "views/Gallery/AddGallery";
+import EditGallery from "views/Gallery/EditGallery";
 
 var ps;
 
@@ -65,9 +70,17 @@ function Dashboard(props) {
             );
           })}
           <Route path="/events/add-events" element={<AddEvents />} />
+          <Route path="/gallery/add-gallery" element={<AddGallery />} />
+          <Route path="/gallery/:galleryId" element={<EditGallery />} />
           <Route path="/events/:eventId" element={<EditEvents />} />
           <Route path="/news/add-news" element={<AddNews />} />
           <Route path="/news/:newsId" element={<EditNews />} />
+          <Route path="/calender/:year" element={<ViewCalender />} />
+          <Route path="/calender/add-calender" element={<AddCalender />} />
+          <Route
+            path="/calender/:calenderYear/:id"
+            element={<EditCalender />}
+          />
         </Routes>
         <Footer fluid />
       </div>

@@ -20,37 +20,34 @@ import {
 } from "@mui/material";
 import { UploadFile } from "@mui/icons-material";
 import { useNewsGlobalContext } from "context/newsContext";
+import { useGalleryGlobalContext } from "context/galleryContext";
 
 const validationSchema = Yup.object({
   title: Yup.string().required("Title is required"),
-  description: Yup.string().required("Description is required"),
   newsImage: Yup.mixed().required("News Image is required"),
   publishNews: Yup.string().required(
     "You must confirm if the news is published or not"
   ),
 });
 
-function AddNews() {
+function AddGallery() {
   const [imageURL, setImageURL] = useState(null);
-  const { addNews } = useNewsGlobalContext();
+  const { addGallery } = useGalleryGlobalContext();
   const formik = useFormik({
     initialValues: {
       title: "",
-      description: "",
 
       newsImage: null,
       publishNews: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const newsData = new FormData();
+      const galleryData = new FormData();
+      galleryData.append("title", values.title);
+      galleryData.append("cover_Image", values.newsImage);
+      galleryData.append("publish", values.publishNews);
 
-      newsData.append("title", values.title);
-      newsData.append("description", values.description);
-      newsData.append("cover_Image", values.newsImage);
-      newsData.append("publish", values.publishNews);
-
-      addNews(newsData);
+      addGallery(galleryData);
     },
   });
 
@@ -91,24 +88,6 @@ function AddNews() {
                           formik.touched.title && Boolean(formik.errors.title)
                         }
                         helperText={formik.touched.title && formik.errors.title}
-                      />
-
-                      <TextField
-                        label="Description"
-                        variant="outlined"
-                        fullWidth
-                        id="description"
-                        name="description"
-                        value={formik.values.description}
-                        onChange={formik.handleChange}
-                        error={
-                          formik.touched.description &&
-                          Boolean(formik.errors.description)
-                        }
-                        helperText={
-                          formik.touched.description &&
-                          formik.errors.description
-                        }
                       />
 
                       <FormControl
@@ -206,7 +185,7 @@ function AddNews() {
                             border: "1px solid #5e0001",
                           },
                         }}>
-                        Add News
+                        Add Image
                       </Button>
                     </form>
                   </Grid>
@@ -223,4 +202,4 @@ function AddNews() {
   );
 }
 
-export default AddNews;
+export default AddGallery;

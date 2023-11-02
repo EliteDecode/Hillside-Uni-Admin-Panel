@@ -5,6 +5,7 @@ import Calender from "views/Calender/Calender";
 import News from "views/News/News";
 import Settings from "views/Settings";
 import Logout from "views/Logout";
+import Gallery from "views/Gallery/Gallery";
 
 var routes = [
   {
@@ -37,15 +38,15 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/academics",
-    name: "Academics",
-    icon: "fa fa-graduation-cap",
-    component: <UserPage />,
+    path: "/gallery",
+    name: "Gallery",
+    icon: "fa fa-image",
+    component: <Gallery />,
     layout: "/admin",
   },
   {
-    path: "/user-page",
-    name: "User Profile",
+    path: "/profile",
+    name: "Profile",
     icon: "nc-icon nc-single-02",
     component: <UserPage />,
     layout: "/admin",

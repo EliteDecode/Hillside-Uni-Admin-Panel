@@ -4,7 +4,7 @@ import { Card, CardHeader, CardBody, CardTitle, Row, Col } from "reactstrap";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button } from "@mui/material";
 import { Add, RemoveRedEye } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import CustomeBtn from "components/FixedPlugin/CustomeBtn";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -15,18 +15,24 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useNewsGlobalContext } from "context/newsContext";
+import { useCalenderGlobalContext } from "context/calenderContext";
 
-function News() {
-  const { news, loading, getNews, deleteSingleNews } = useNewsGlobalContext();
-  console.log(news);
+function ViewCalender() {
+  const {
+    calenderYear,
+    loading,
+    getCalenderByYear,
+    deleteSingleCalenderCategory,
+  } = useCalenderGlobalContext();
 
   const [open, setOpen] = React.useState(false);
+  const { year } = useParams();
 
   const handleDelete = (id) => {
-    deleteSingleNews(id);
+    deleteSingleCalenderCategory(id);
     setOpen(false);
   };
+
   const handleClickOpen = (id) => {
     setOpen({ ...open, [id]: true });
   };
@@ -34,14 +40,15 @@ function News() {
   const handleClose = (id) => {
     setOpen({ ...open, [id]: false });
   };
+
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
-    { field: "title", headerName: "Title", width: 300 },
-    { field: "description", headerName: "Description", width: 700 },
+    { field: "title", headerName: "Title", width: 200 },
+    { field: "description", headerName: "Description", width: 400 },
     {
-      field: "createdAt",
-      headerName: "Date",
-      width: 150,
+      field: "startDate",
+      headerName: "Start Date",
+      width: 200,
       renderCell: (params) => (
         <Button
           size="small"
@@ -57,7 +64,36 @@ function News() {
               color: "#fff",
             },
           }}>
-          {new Date(params.row.createdAt).toLocaleString(undefined, {
+          {new Date(params.row.startDate).toLocaleString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+
+            hour12: true,
+          })}
+        </Button>
+      ),
+    },
+    {
+      field: "endDate",
+      headerName: "End Date",
+      width: 200,
+      renderCell: (params) => (
+        <Button
+          size="small"
+          variant="contained"
+          disableElevation
+          sx={{
+            bgcolor: "#d2d6f7",
+            fontSize: "11px",
+            color: "#0416bd",
+            borderRadius: "15px",
+            "&:hover": {
+              bgcolor: "#0416bd",
+              color: "#fff",
+            },
+          }}>
+          {new Date(params.row.endDate).toLocaleString(undefined, {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -71,6 +107,7 @@ function News() {
       field: "publish",
       headerName: "Publish",
       width: 120,
+
       renderCell: (params) =>
         params.row.publish === 1 ? (
           <Button
@@ -108,7 +145,69 @@ function News() {
           </Button>
         ),
     },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 100,
+      renderCell: (params) => {
+        const currentDate = new Date();
+        const endDate = new Date(params.row.endDate); // Corrected the variable name
+        const startDate = new Date(params.row.startDate); // Corrected the variable name
 
+        return endDate > currentDate && startDate > currentDate ? (
+          <Button
+            size="small"
+            variant="contained"
+            disableElevation
+            sx={{
+              bgcolor: "#e0dcc5",
+              fontSize: "11px",
+              color: "#382f04",
+              borderRadius: "15px",
+              "&:hover": {
+                bgcolor: "#382f04",
+                color: "#fff",
+              },
+            }}>
+            Upcoming
+          </Button>
+        ) : endDate > currentDate && startDate < currentDate ? (
+          <Button
+            size="small"
+            variant="contained"
+            disableElevation
+            sx={{
+              bgcolor: "#e0dcc5",
+              fontSize: "11px",
+              color: "#382f04",
+              borderRadius: "15px",
+              "&:hover": {
+                bgcolor: "#382f04",
+                color: "#fff",
+              },
+            }}>
+            Active
+          </Button>
+        ) : (
+          <Button
+            size="small"
+            variant="contained"
+            disableElevation
+            sx={{
+              bgcolor: "#f28e8a",
+              fontSize: "11px",
+              color: "#470b09",
+              borderRadius: "15px",
+              "&:hover": {
+                bgcolor: "#470b09",
+                color: "#fff",
+              },
+            }}>
+            Past
+          </Button>
+        );
+      },
+    },
     {
       field: "edit",
       headerName: "Edit",
@@ -142,7 +241,7 @@ function News() {
               </DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                  Do you want to delete this news?
+                  Do you want to delete this events?
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
@@ -150,7 +249,7 @@ function News() {
                   Cancel
                 </Button>
                 <Button onClick={(e) => handleDelete(params.row.id)} autoFocus>
-                  Delete {params.row.id}
+                  Delete
                 </Button>
               </DialogActions>
             </Dialog>
@@ -161,21 +260,19 @@ function News() {
   ];
 
   useEffect(() => {
-    getNews();
+    getCalenderByYear(year);
   }, []);
-
-  console.log(loading);
 
   return (
     <>
       <div className="content">
         <Row>
           <Col md="12">
-            <Header title="All News" />
+            <Header title="All recent and upcoming events" />
 
             <Box className="mt-2 mb-5">
-              <Link to="/admin/news/add-news">
-                <CustomeBtn value="Add News" icon={<Add />} />
+              <Link to="/admin/calender/add-calender">
+                <CustomeBtn value="Add Calender" icon={<Add />} />
               </Link>
             </Box>
 
@@ -185,20 +282,20 @@ function News() {
                   <Loader />
                 ) : (
                   <>
-                    {!news ? (
+                    {!calenderYear ? (
                       <NotFound />
                     ) : (
                       <DataGrid
-                        rows={news ? news : []}
+                        rows={calenderYear ? calenderYear : []}
                         columns={columns}
                         initialState={{
                           pagination: {
                             paginationModel: {
-                              pageSize: 5,
+                              pageSize: 10,
                             },
                           },
                         }}
-                        pageSizeOptions={[5]}
+                        pageSizeOptions={[10]}
                         checkboxSelection
                         disableRowSelectionOnClick
                       />
@@ -214,4 +311,4 @@ function News() {
   );
 }
 
-export default News;
+export default ViewCalender;

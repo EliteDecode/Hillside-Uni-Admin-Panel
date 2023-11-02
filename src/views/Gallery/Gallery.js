@@ -15,17 +15,17 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useCalenderGlobalContext } from "context/calenderContext";
+import { useGalleryGlobalContext } from "context/galleryContext";
 
-function Calender() {
-  const { calender, loading, getAllCalender, deleteSingleCalender } =
-    useCalenderGlobalContext();
-  console.log(calender);
+function Gallery() {
+  const { gallery, singleGallery, loading, getGallery, deleteSingleGallery } =
+    useGalleryGlobalContext();
+  console.log(gallery);
 
   const [open, setOpen] = React.useState(false);
 
-  const handleDelete = (year) => {
-    deleteSingleCalender(year);
+  const handleDelete = (id) => {
+    deleteSingleGallery(id);
     setOpen(false);
   };
   const handleClickOpen = (id) => {
@@ -35,40 +35,88 @@ function Calender() {
   const handleClose = (id) => {
     setOpen({ ...open, [id]: false });
   };
-
-  const data = [];
-  calender?.map((ca, index) => {
-    data.push({
-      id: index + 1,
-      year: ca.year,
-    });
-  });
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
-    { field: "year", headerName: "Year", width: 200 },
+    { field: "title", headerName: "Title", width: 300 },
     {
-      field: "view",
-      headerName: "View",
+      field: "createdAt",
+      headerName: "Date Added",
       width: 150,
       renderCell: (params) => (
+        <Button
+          size="small"
+          variant="contained"
+          disableElevation
+          sx={{
+            bgcolor: "#faf3e1",
+            fontSize: "11px",
+            color: "#664b01",
+            borderRadius: "15px",
+            "&:hover": {
+              bgcolor: "#664b01",
+              color: "#fff",
+            },
+          }}>
+          {new Date(params.row.createdAt).toLocaleString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+
+            hour12: true,
+          })}
+        </Button>
+      ),
+    },
+    {
+      field: "publish",
+      headerName: "Publish",
+      width: 120,
+      renderCell: (params) =>
+        params.row.publish === "1" ? (
+          <Button
+            size="small"
+            variant="contained"
+            disableElevation
+            sx={{
+              bgcolor: "#e0ebdf",
+              fontSize: "11px",
+              color: "#205419",
+              borderRadius: "15px",
+              "&:hover": {
+                bgcolor: "#205419",
+                color: "#fff",
+              },
+            }}>
+            Published
+          </Button>
+        ) : (
+          <Button
+            size="small"
+            variant="contained"
+            disableElevation
+            sx={{
+              bgcolor: "#e0dcc5",
+              fontSize: "11px",
+              color: "#382f04",
+              borderRadius: "15px",
+              "&:hover": {
+                bgcolor: "#382f04",
+                color: "#fff",
+              },
+            }}>
+            Unpublished
+          </Button>
+        ),
+    },
+
+    {
+      field: "edit",
+      headerName: "Edit",
+      width: 50,
+      renderCell: (params) => (
         <>
-          <Link to={`${params.row.year}`}>
-            <Button
-              size="small"
-              variant="contained"
-              disableElevation
-              sx={{
-                bgcolor: "#e0ebdf",
-                fontSize: "11px",
-                color: "#205419",
-                borderRadius: "15px",
-                "&:hover": {
-                  bgcolor: "#205419",
-                  color: "#fff",
-                },
-              }}>
-              View
-            </Button>
+          <Link to={`${params.id}`}>
+            <EditIcon />
           </Link>
         </>
       ),
@@ -76,35 +124,33 @@ function Calender() {
     {
       field: "delete",
       headerName: "Delete",
-      width: 180,
+      width: 80,
       renderCell: (params) => (
         <>
           <div>
             <DeleteIcon
-              onClick={() => handleClickOpen(params.row.year)}
+              onClick={() => handleClickOpen(params.row.id)}
               className="cursor-pointer"
             />
             <Dialog
-              open={open[params.row.year] || false}
-              onClose={() => handleClose(params.row.year)}
+              open={open[params.row.id] || false}
+              onClose={() => handleClose(params.row.id)}
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description">
               <DialogTitle id="alert-dialog-title">
-                {"Deleteing Calender"}
+                {"Deleteing News"}
               </DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                  Do you want to delete this calender?
+                  Do you want to delete this gallery?
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button onClick={() => handleClose(params.row.year)}>
+                <Button onClick={() => handleClose(params.row.id)}>
                   Cancel
                 </Button>
-                <Button
-                  onClick={(e) => handleDelete(params.row.year)}
-                  autoFocus>
-                  Delete
+                <Button onClick={(e) => handleDelete(params.row.id)} autoFocus>
+                  Delete {params.row.id}
                 </Button>
               </DialogActions>
             </Dialog>
@@ -115,21 +161,19 @@ function Calender() {
   ];
 
   useEffect(() => {
-    getAllCalender();
+    getGallery();
   }, []);
-
-  console.log(loading);
 
   return (
     <>
       <div className="content">
         <Row>
           <Col md="12">
-            <Header title="All Calender" />
+            <Header title="All News" />
 
             <Box className="mt-2 mb-5">
-              <Link to="/admin/calender/add-calender">
-                <CustomeBtn value="Add Calender" icon={<Add />} />
+              <Link to="/admin/gallery/add-gallery">
+                <CustomeBtn value="Add Image to Gallery" icon={<Add />} />
               </Link>
             </Box>
 
@@ -139,11 +183,11 @@ function Calender() {
                   <Loader />
                 ) : (
                   <>
-                    {!calender ? (
+                    {!gallery ? (
                       <NotFound />
                     ) : (
                       <DataGrid
-                        rows={data ? data : []}
+                        rows={gallery ? gallery : []}
                         columns={columns}
                         initialState={{
                           pagination: {
@@ -168,4 +212,4 @@ function Calender() {
   );
 }
 
-export default Calender;
+export default Gallery;

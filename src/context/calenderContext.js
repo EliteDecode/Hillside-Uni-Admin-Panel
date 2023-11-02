@@ -11,6 +11,7 @@ const CalenderProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
   const [calender, setCalender] = useState(null);
   const [singleCalender, setSingleCalender] = useState(null);
+  const [calenderYear, setCalenderYear] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -20,7 +21,7 @@ const CalenderProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const addCalenders = async (admindata) => {
+  const addCalender = async (admindata) => {
     console.log(admin.token);
 
     const config = {
@@ -36,11 +37,11 @@ const CalenderProvider = ({ children }) => {
         config
       );
 
-      // Check if the login was successful
       if (data) {
-        toast.success("Calenders added successfully", {
+        toast.success("Calender added successfully", {
           onClose: () => {
-            navigate("/admin/calenders");
+            // navigate("/admin/calender");
+            console.log("he");
           },
         });
 
@@ -74,7 +75,26 @@ const CalenderProvider = ({ children }) => {
     }
   };
 
-  const getSingleCalenders = async (id) => {
+  const getCalenderByYear = async (year) => {
+    setLoading(true);
+    try {
+      const data = await axios.get(
+        `${process.env.REACT_APP_API_URL}/academic-calender/published-academic-calender/${year}`
+      );
+      setCalenderYear(data?.data);
+      setLoading(false);
+
+      return data;
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      toast.error(error?.response?.data?.error);
+      toast.error(error?.message);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  const getSingleCalender = async (id) => {
     setLoading(true);
     try {
       const data = await axios.get(
@@ -91,7 +111,7 @@ const CalenderProvider = ({ children }) => {
     }
   };
 
-  const deleteSingleCalender = async (calenderId) => {
+  const deleteSingleCalender = async (calenderYear) => {
     const config = {
       headers: {
         Authorization: `Bearer ${admin.token}`,
@@ -102,13 +122,44 @@ const CalenderProvider = ({ children }) => {
     console.log("we are here");
     try {
       const data = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/academic-calender/delete-calenders/${calenderId}/${admin.data.id}`,
+        `${process.env.REACT_APP_API_URL}/academic-calender/delete-academic-calender/${calenderYear}/${admin.data.id}`,
 
         config
       );
 
       if (data) {
-        toast.success("Calenders updated successfully", {
+        toast.success("Calender year deleted successfully", {
+          onClose: () => {
+            window.location.reload();
+            setLoading(false);
+          },
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.response.data.error);
+      toast.error(error.response.data?.message);
+    }
+  };
+
+  const deleteSingleCalenderCategory = async (calenderId) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${admin.token}`,
+      },
+    };
+
+    setLoading(true);
+    console.log("we are here");
+    try {
+      const data = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/academic-calender/delete-academic-calender-category/${calenderId}/${admin.data.id}`,
+
+        config
+      );
+
+      if (data) {
+        toast.success("Calender updated successfully", {
           onClose: () => {
             window.location.reload();
             setLoading(false);
@@ -131,7 +182,7 @@ const CalenderProvider = ({ children }) => {
 
     try {
       const data = await axios.put(
-        `${process.env.REACT_APP_API_URL}/academic-calender/edit-calenders/${calenderId}/${admin.data.id}`,
+        `${process.env.REACT_APP_API_URL}/academic-calender/edit-academic-calender/${calenderId}/${admin.data.id}`,
         calenderData,
         config
       );
@@ -139,9 +190,9 @@ const CalenderProvider = ({ children }) => {
       console.log(data);
 
       if (data) {
-        toast.success("Calenders deleted successfully", {
+        toast.success("Calender deleted successfully", {
           onClose: () => {
-            navigate("/admin/dashboard");
+            navigate("/admin/calender");
           },
         });
 
@@ -159,12 +210,15 @@ const CalenderProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        addCalenders,
-        getSingleCalenders,
+        addCalender,
+        getSingleCalender,
         getAllCalender,
         editSingleCalender,
+        deleteSingleCalenderCategory,
         deleteSingleCalender,
+        getCalenderByYear,
         calender,
+        calenderYear,
         loading,
         singleCalender,
       }}>
