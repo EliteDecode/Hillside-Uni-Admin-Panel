@@ -21,11 +21,11 @@ const NewsProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const addNews = async (admindata) => {
-    console.log(admin.token);
+    console.log(admin?.token);
 
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -50,8 +50,8 @@ const NewsProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
@@ -87,20 +87,19 @@ const NewsProvider = ({ children }) => {
       return data;
     } catch (error) {
       setLoading(false);
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
   const deleteSingleNews = async (newId) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
     setLoading(true);
-    console.log("we are here");
     try {
       const data = await axios.delete(
         `${process.env.REACT_APP_API_URL}/news/delete-news/${newId}/${admin.data.id}`,
@@ -109,7 +108,7 @@ const NewsProvider = ({ children }) => {
       );
 
       if (data) {
-        toast.success("News updated successfully", {
+        toast.success("News deleted successfully", {
           onClose: () => {
             window.location.reload();
             setLoading(false);
@@ -118,15 +117,15 @@ const NewsProvider = ({ children }) => {
       }
     } catch (error) {
       setLoading(false);
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
   const editNews = async (newsData, newId) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -141,7 +140,7 @@ const NewsProvider = ({ children }) => {
       // Check if the login was successful
       // Check if the login was successful
       if (data) {
-        toast.success("News deleted successfully", {
+        toast.success("News updated successfully", {
           onClose: () => {
             navigate("/admin/dashboard");
           },
@@ -153,8 +152,8 @@ const NewsProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 

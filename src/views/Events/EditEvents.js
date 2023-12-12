@@ -45,7 +45,7 @@ function EditEvents() {
     getSingleEvents(eventId);
   }, []);
 
-  const img = `http://localhost:5000/hust/api/v1/uploads/images/${event?.image}`;
+  const img = `${process.env.REACT_APP_API_URL}/hust/api/v1/uploads/images/${event?.image}`;
 
   const formik = useFormik({
     initialValues: {

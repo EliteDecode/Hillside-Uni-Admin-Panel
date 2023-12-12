@@ -17,6 +17,7 @@ import {
   MenuItem,
   FormControl,
   FormHelperText,
+  TextareaAutosize,
 } from "@mui/material";
 import { UploadFile } from "@mui/icons-material";
 import { useNewsGlobalContext } from "context/newsContext";
@@ -47,7 +48,7 @@ function EditNews() {
   }, []);
   console.log(singleNews);
 
-  const img = `http://localhost:5000/hust/api/v1/uploads/images/${singleNews?.image}`;
+  const img = `${process.env.REACT_APP_API_URL}/hust/api/v1/uploads/images/${singleNews?.image}`;
 
   const formik = useFormik({
     initialValues: {
@@ -105,7 +106,7 @@ function EditNews() {
                         focused={singleNews ? true : false}
                         id="title"
                         name="title"
-                        value={formik.values.title}
+                        value={formik.values.title || singleNews?.title}
                         onChange={formik.handleChange}
                         error={
                           formik.touched.title && Boolean(formik.errors.title)
@@ -113,25 +114,31 @@ function EditNews() {
                         helperText={formik.touched.title && formik.errors.title}
                       />
 
-                      <TextField
-                        label="Description"
-                        variant="outlined"
-                        fullWidth
-                        focused={singleNews ? true : false}
-                        id="description"
-                        placeholder={singleNews?.description}
-                        name="description"
-                        value={formik.values.description}
-                        onChange={formik.handleChange}
-                        error={
-                          formik.touched.description &&
-                          Boolean(formik.errors.description)
-                        }
-                        helperText={
-                          formik.touched.description &&
-                          formik.errors.description
-                        }
-                      />
+                      <FormControl fullWidth>
+                        <TextareaAutosize
+                          minRows={5} // You can adjust the number of rows as needed
+                          placeholder={singleNews?.description}
+                          id="description"
+                          name="description"
+                          value={
+                            formik.values.description || singleNews?.description
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          className={
+                            formik.touched.description &&
+                            formik.errors.description
+                              ? "error border p-3" // You can define a CSS class for error styling
+                              : "border p-3"
+                          }
+                        />
+                        {formik.touched.description &&
+                          formik.errors.description && (
+                            <FormHelperText className="text-red-400">
+                              {formik.errors.description}
+                            </FormHelperText>
+                          )}
+                      </FormControl>
 
                       <FormControl
                         className="w-full"

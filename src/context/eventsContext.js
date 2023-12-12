@@ -21,11 +21,11 @@ const EventProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const addEvents = async (admindata) => {
-    console.log(admin.token);
+    console.log(admin?.token);
 
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -50,8 +50,9 @@ const EventProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.message);
+      toast.error(error?.response?.data?.message);
     }
   };
 
@@ -86,15 +87,15 @@ const EventProvider = ({ children }) => {
       return data;
     } catch (error) {
       setLoading(false);
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
   const deleteSingleEvents = async (eventId) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -117,15 +118,15 @@ const EventProvider = ({ children }) => {
       }
     } catch (error) {
       setLoading(false);
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
   const editEvents = async (eventData, eventId) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -152,8 +153,8 @@ const EventProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 

@@ -17,6 +17,7 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  TextareaAutosize,
 } from "@mui/material";
 import { UploadFile } from "@mui/icons-material";
 import { useNewsGlobalContext } from "context/newsContext";
@@ -93,23 +94,29 @@ function AddNews() {
                         helperText={formik.touched.title && formik.errors.title}
                       />
 
-                      <TextField
-                        label="Description"
-                        variant="outlined"
-                        fullWidth
-                        id="description"
-                        name="description"
-                        value={formik.values.description}
-                        onChange={formik.handleChange}
-                        error={
-                          formik.touched.description &&
-                          Boolean(formik.errors.description)
-                        }
-                        helperText={
-                          formik.touched.description &&
-                          formik.errors.description
-                        }
-                      />
+                      <FormControl fullWidth>
+                        <TextareaAutosize
+                          minRows={5} // You can adjust the number of rows as needed
+                          placeholder="Description"
+                          id="description"
+                          name="description"
+                          value={formik.values.description}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          className={
+                            formik.touched.description &&
+                            formik.errors.description
+                              ? "error border p-3" // You can define a CSS class for error styling
+                              : "border p-3"
+                          }
+                        />
+                        {formik.touched.description &&
+                          formik.errors.description && (
+                            <FormHelperText className="text-red-400">
+                              {formik.errors.description}
+                            </FormHelperText>
+                          )}
+                      </FormControl>
 
                       <FormControl
                         className="w-full"

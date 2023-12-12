@@ -47,7 +47,7 @@ function EditGallery() {
     getSingleGallery(galleryId);
   }, []);
 
-  const img = `http://localhost:5000/hust/api/v1/uploads/images/${singleGallery?.image}`;
+  const img = `${process.env.REACT_APP_API_URL}/hust/api/v1/uploads/images/${singleGallery?.image}`;
 
   const formik = useFormik({
     initialValues: {

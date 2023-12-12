@@ -22,11 +22,11 @@ const CalenderProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const addCalender = async (admindata) => {
-    console.log(admin.token);
+    console.log(admin?.token);
 
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -51,8 +51,8 @@ const CalenderProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
@@ -106,15 +106,15 @@ const CalenderProvider = ({ children }) => {
       return data;
     } catch (error) {
       setLoading(false);
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
   const deleteSingleCalender = async (calenderYear) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -137,15 +137,15 @@ const CalenderProvider = ({ children }) => {
       }
     } catch (error) {
       setLoading(false);
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
   const deleteSingleCalenderCategory = async (calenderId) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -168,15 +168,15 @@ const CalenderProvider = ({ children }) => {
       }
     } catch (error) {
       setLoading(false);
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
   const editSingleCalender = async (calenderData, calenderId) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -202,8 +202,8 @@ const CalenderProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 

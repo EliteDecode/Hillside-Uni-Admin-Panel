@@ -23,7 +23,7 @@ const GalleryProvider = ({ children }) => {
   const addGallery = async (admindata) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -48,8 +48,8 @@ const GalleryProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
@@ -86,15 +86,15 @@ const GalleryProvider = ({ children }) => {
       return data;
     } catch (error) {
       setLoading(false);
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
   const deleteSingleGallery = async (newId) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -117,15 +117,15 @@ const GalleryProvider = ({ children }) => {
       }
     } catch (error) {
       setLoading(false);
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
   const editGallery = async (galleryData, newId) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -146,9 +146,9 @@ const GalleryProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.error);
-      toast.error(error.message);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.message);
+      toast.error(error?.response?.data?.message);
     }
   };
 

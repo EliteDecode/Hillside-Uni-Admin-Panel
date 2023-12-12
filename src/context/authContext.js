@@ -19,14 +19,14 @@ const AuthProvider = ({ children }) => {
   const loginAdmin = async (admindata) => {
     try {
       const data = await axios.post(
-        `${process.env.REACT_APP_API_URL}/admin/login`,
+        `${process.env.REACT_APP_API_URL}/admin/login/`,
         admindata
       );
 
       // Check if the login was successful
       if (data) {
         localStorage.setItem("Admin", JSON.stringify(data.data));
-        setAdmin(data.data);
+        setAdmin(data?.data);
         toast.success("Login successful", {
           onClose: () => {
             navigate("/admin/dashboard");
@@ -36,16 +36,16 @@ const AuthProvider = ({ children }) => {
         return data;
       }
     } catch (error) {
-      // Display an error toast
-      toast.error(error.response.data.error);
-      console.log(error);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.message);
+      toast.error(error?.response?.data?.message);
     }
   };
 
   const editAdmin = async (admindata, adminId) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -71,15 +71,15 @@ const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
   const changePassword = async (admindata, adminId) => {
     const config = {
       headers: {
-        Authorization: `Bearer ${admin.token}`,
+        Authorization: `Bearer ${admin?.token}`,
       },
     };
 
@@ -104,8 +104,8 @@ const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
-      toast.error(error.response.data.error);
-      toast.error(error.response.data?.message);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
     }
   };
   return (
