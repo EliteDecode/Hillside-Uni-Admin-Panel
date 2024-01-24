@@ -47,7 +47,7 @@ function EditGallery() {
     getSingleGallery(galleryId);
   }, []);
 
-  const img = `${process.env.REACT_APP_API_URL}/hust/api/v1/uploads/images/${singleGallery?.image}`;
+  const img = `${process.env.REACT_APP_API_URL}/uploads/images/${singleGallery?.image}`;
 
   const formik = useFormik({
     initialValues: {
@@ -65,6 +65,7 @@ function EditGallery() {
         { columnName: "title", newValue: values.title },
         { columnName: "publish", newValue: values.publishGallery },
       ].filter((update) => update.newValue !== "");
+
       galleryData.append("updates", JSON.stringify(updates));
 
       editGallery(galleryData, galleryId);

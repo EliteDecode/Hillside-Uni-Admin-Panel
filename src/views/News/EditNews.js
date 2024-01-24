@@ -48,7 +48,7 @@ function EditNews() {
   }, []);
   console.log(singleNews);
 
-  const img = `${process.env.REACT_APP_API_URL}/hust/api/v1/uploads/images/${singleNews?.image}`;
+  const img = `${process.env.REACT_APP_API_URL}/uploads/images/${singleNews?.image}`;
 
   const formik = useFormik({
     initialValues: {
