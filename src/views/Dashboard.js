@@ -1,12 +1,13 @@
 import { Button, Skeleton } from "@mui/material";
 import SkeletalCard from "components/FixedPlugin/SkeletalCard";
+import { useAuthGlobalContext } from "context/authContext";
 import { useCalenderGlobalContext } from "context/calenderContext";
 import { useEventGlobalContext } from "context/eventsContext";
 import { useNewsGlobalContext } from "context/newsContext";
 import React, { useEffect } from "react";
 // react plugin used to create charts
 import { Line, Pie } from "react-chartjs-2";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // reactstrap components
 import {
   Card,
@@ -24,6 +25,16 @@ function Dashboard() {
   const { news, getNews } = useNewsGlobalContext();
   const { calenderYear, loading, getCalenderByYear } =
     useCalenderGlobalContext();
+
+  const { admin, changePassword } = useAuthGlobalContext();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (admin?.data?.email == "hr@admin.com") {
+      navigate("/admin/staff");
+    }
+  }, []);
 
   const numRows = 3;
   const loadingRows = Array.from({ length: numRows }, (_, index) => (

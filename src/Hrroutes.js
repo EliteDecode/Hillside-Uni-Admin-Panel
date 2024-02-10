@@ -8,44 +8,7 @@ import Logout from "views/Logout";
 import Gallery from "views/Gallery/Gallery";
 import Staff from "views/Staff/Staff";
 
-var routes = [
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: "nc-icon nc-bank",
-    component: <Dashboard />,
-    layout: "/admin",
-  },
-  {
-    path: "/events",
-    name: "Events",
-    icon: " fa fa-calendar",
-    component: <Events />,
-    layout: "/admin",
-  },
-
-  {
-    path: "/calender",
-    name: "Academic Calender",
-    icon: "fa fa-calendar-check",
-    component: <Calender />,
-    layout: "/admin",
-  },
-  {
-    path: "/news",
-    name: "News",
-    icon: "fa fa-newspaper",
-    component: <News />,
-    layout: "/admin",
-  },
-  {
-    path: "/gallery",
-    name: "Gallery",
-    icon: "fa fa-image",
-    component: <Gallery />,
-    layout: "/admin",
-  },
-
+var hrRoutes = [
   {
     path: "/staff",
     name: "Staffs",
@@ -77,4 +40,4 @@ var routes = [
     layout: "/admin",
   },
 ];
-export default routes;
+export default hrRoutes;

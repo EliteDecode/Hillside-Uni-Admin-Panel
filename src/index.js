@@ -17,31 +17,34 @@ import { EventProvider } from "context/eventsContext";
 import { NewsProvider } from "context/newsContext";
 import { CalenderProvider } from "context/calenderContext";
 import { GalleryProvider } from "context/galleryContext";
+import { StaffProvider } from "context/staffContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <BrowserRouter>
     <AuthProvider>
-      <EventProvider>
-        <NewsProvider>
-          <CalenderProvider>
-            <GalleryProvider>
-              <Routes>
-                <Route element={<ProtectedRoutes />}>
-                  <Route path="/admin/*" element={<AdminLayout />} />
-                  <Route
-                    path="/"
-                    element={<Navigate to="/admin/dashboard" replace />}
-                  />
-                </Route>
+      <StaffProvider>
+        <EventProvider>
+          <NewsProvider>
+            <CalenderProvider>
+              <GalleryProvider>
+                <Routes>
+                  <Route element={<ProtectedRoutes />}>
+                    <Route path="/admin/*" element={<AdminLayout />} />
+                    <Route
+                      path="/"
+                      element={<Navigate to="/admin/dashboard" replace />}
+                    />
+                  </Route>
 
-                <Route path="/login" element={<Login />} />
-              </Routes>
-            </GalleryProvider>
-          </CalenderProvider>
-        </NewsProvider>
-      </EventProvider>
+                  <Route path="/login" element={<Login />} />
+                </Routes>
+              </GalleryProvider>
+            </CalenderProvider>
+          </NewsProvider>
+        </EventProvider>
+      </StaffProvider>
     </AuthProvider>
   </BrowserRouter>
 );

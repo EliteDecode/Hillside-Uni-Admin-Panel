@@ -30,7 +30,7 @@ function Sidebar(props) {
   });
   return (
     <div
-      className="sidebar"
+      className="sidebar py-3"
       data-color={props.bgColor}
       data-active-color={props.activeColor}>
       <div className="logo">
@@ -39,7 +39,7 @@ function Sidebar(props) {
             <img src={logo} alt="react-logo" />
           </div>
         </a>
-        <a href="/" className="simple-text logo-normal">
+        <a href="/" className="simple-text logo-text logo-normal">
           Hillside University
         </a>
       </div>

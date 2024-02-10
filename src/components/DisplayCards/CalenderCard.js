@@ -7,6 +7,7 @@ const CalenderCard = ({
   isPublished,
   start,
   end,
+  id,
 }) => {
   return (
     <div className=" bg-white shadow-lg rounded-lg overflow-hidden sm:mx-4 mx-1 sm:mt-0 mt-1">
@@ -38,12 +39,21 @@ const CalenderCard = ({
             })}
           </p>
         </div>
-        <button
-          className={`mt-4 px-4 py-2 rounded-full ${
-            isPublished ? "bg-green-500 text-white" : "bg-red-500 text-white"
-          }`}>
-          {isPublished ? "Published" : "Not Published"}
-        </button>
+        {id ? (
+          <button
+            className={`mt-4 px-4 py-2 rounded-full ${
+              isPublished ? "bg-green-500 text-white" : "bg-red-500 text-white"
+            }`}>
+            {isPublished ? "Approved" : "Pending"}
+          </button>
+        ) : (
+          <button
+            className={`mt-4 px-4 py-2 rounded-full ${
+              isPublished ? "bg-green-500 text-white" : "bg-red-500 text-white"
+            }`}>
+            {isPublished ? "Published" : "Not Published"}
+          </button>
+        )}
       </div>
     </div>
   );
