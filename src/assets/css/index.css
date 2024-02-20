@@ -62,12 +62,20 @@
   border-radius: 5px;
   margin: auto;
 }
-.logo img {
+
+.logoheader {
+  width: 20%;
+  background-color: #fff;
+  padding: 1%;
+  border-radius: 5px;
+  margin: auto;
+}
+.logoheader img {
   margin-top: -2%;
 }
 .text {
   width: 75%;
-  color: #5e0001;
+  color: #fff;
 }
 
 .logo-text {
@@ -79,13 +87,14 @@
 .text h1 {
   font-size: 13px;
   font-weight: bold;
-  color: #5e0001;
+  color: #fff;
 }
 
 .text h6 {
   font-size: 11px;
   font-weight: 400;
   margin-top: -14%;
+  color: "#fff";
 }
 
 .middle {
