@@ -16,7 +16,7 @@ const initialValues = {
 };
 
 const Login = () => {
-  const { loginAdmin } = useAuthGlobalContext();
+  const { loginAdmin, loading } = useAuthGlobalContext();
   const admin = localStorage.getItem("Admin");
   const Navigate = useNavigate();
 
@@ -28,7 +28,6 @@ const Login = () => {
 
   const handleSubmit = (values, { setSubmitting }) => {
     loginAdmin(values);
-    setSubmitting(false);
   };
 
   return (
@@ -80,10 +79,11 @@ const Login = () => {
                 />
               </div>
               <div>
-                {isSubmitting ? (
+                {loading ? (
                   <Button
                     variant="contained"
                     size="large"
+                    disabled={loading}
                     disableElevation
                     sx={{
                       bgcolor: "#5e0001",
@@ -94,7 +94,7 @@ const Login = () => {
                         color: "#fff",
                       },
                     }}>
-                    Loading...
+                    Please wait...
                   </Button>
                 ) : (
                   <Button

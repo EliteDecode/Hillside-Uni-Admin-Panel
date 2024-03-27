@@ -21,7 +21,7 @@ const NewsProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const addNews = async (admindata) => {
-    console.log(admin?.token);
+    setLoading(true);
 
     const config = {
       headers: {
@@ -38,6 +38,7 @@ const NewsProvider = ({ children }) => {
 
       // Check if the login was successful
       if (data) {
+        setLoading(false);
         toast.success("News added successfully", {
           onClose: () => {
             navigate("/admin/news");
@@ -50,6 +51,7 @@ const NewsProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
+      setLoading(false);
       toast.error(error?.response?.data.error);
       toast.error(error?.response?.data?.message);
     }
@@ -68,9 +70,9 @@ const NewsProvider = ({ children }) => {
       return data;
     } catch (error) {
       setLoading(false);
-      console.log(error);
+
       toast.error(error?.response?.data?.error);
-      toast.error(error?.message);
+
       toast.error(error?.response?.data?.message);
     }
   };
@@ -123,6 +125,7 @@ const NewsProvider = ({ children }) => {
   };
 
   const editNews = async (newsData, newId) => {
+    setLoading(true);
     const config = {
       headers: {
         Authorization: `Bearer ${admin?.token}`,
@@ -140,6 +143,7 @@ const NewsProvider = ({ children }) => {
       // Check if the login was successful
       // Check if the login was successful
       if (data) {
+        setLoading(false);
         toast.success("News updated successfully", {
           onClose: () => {
             navigate("/admin/dashboard");
@@ -152,6 +156,7 @@ const NewsProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
+      setLoading(false);
       toast.error(error?.response?.data.error);
       toast.error(error?.response?.data?.message);
     }

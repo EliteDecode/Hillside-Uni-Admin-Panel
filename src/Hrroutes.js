@@ -10,6 +10,13 @@ import Staff from "views/Staff/Staff";
 
 var hrRoutes = [
   {
+    path: "/dashboard",
+    name: "Dashboard",
+    icon: "nc-icon nc-bank",
+    component: <Dashboard />,
+    layout: "/admin",
+  },
+  {
     path: "/staff",
     name: "Staffs",
     icon: "fa fa-user-md",

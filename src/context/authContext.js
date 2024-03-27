@@ -9,6 +9,7 @@ const AppContext = React.createContext();
 
 const AuthProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setAdmin(JSON.parse(localStorage.getItem("Admin")));
@@ -17,6 +18,7 @@ const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const loginAdmin = async (admindata) => {
+    setLoading(true);
     try {
       const data = await axios.post(
         `${process.env.REACT_APP_API_URL}/admin/login/`,
@@ -25,6 +27,7 @@ const AuthProvider = ({ children }) => {
 
       // Check if the login was successful
       if (data) {
+        setLoading(false);
         localStorage.setItem("Admin", JSON.stringify(data.data));
         setAdmin(data?.data);
         toast.success("Login successful", {
@@ -36,13 +39,14 @@ const AuthProvider = ({ children }) => {
         return data;
       }
     } catch (error) {
+      setLoading(false);
       toast.error(error?.response?.data.error);
-      toast.error(error?.message);
       toast.error(error?.response?.data?.message);
     }
   };
 
   const editAdmin = async (admindata, adminId) => {
+    setLoading(true);
     const config = {
       headers: {
         Authorization: `Bearer ${admin?.token}`,
@@ -60,6 +64,7 @@ const AuthProvider = ({ children }) => {
       // Check if the login was successful
       // Check if the login was successful
       if (data) {
+        setLoading(false);
         toast.success("Admin deleted successfully", {
           onClose: () => {
             navigate("/admin/profile");
@@ -71,12 +76,14 @@ const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
+      setLoading(false);
       toast.error(error?.response?.data.error);
       toast.error(error?.response?.data?.message);
     }
   };
 
   const changePassword = async (admindata, adminId) => {
+    setLoading(true);
     const config = {
       headers: {
         Authorization: `Bearer ${admin?.token}`,
@@ -90,10 +97,10 @@ const AuthProvider = ({ children }) => {
         config
       );
 
-      console.log(data);
       // Check if the login was successful
       // Check if the login was successful
       if (data) {
+        setLoading(false);
         toast.success("Admin password updated successfully", {
           onClose: () => {
             navigate("/admin/settings");
@@ -104,13 +111,14 @@ const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       // Display an error toast
+      setLoading(false);
       toast.error(error?.response?.data.error);
       toast.error(error?.response?.data?.message);
     }
   };
   return (
     <AppContext.Provider
-      value={{ loginAdmin, admin, editAdmin, changePassword }}>
+      value={{ loginAdmin, admin, editAdmin, changePassword, loading }}>
       {children}
       <ToastContainer />
     </AppContext.Provider>

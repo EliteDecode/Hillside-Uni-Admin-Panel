@@ -35,7 +35,8 @@ const validationSchema = Yup.object({
 
 function EditNews() {
   const [imageURL, setImageURL] = useState(null);
-  const { getSingleNews, singleNews, editNews } = useNewsGlobalContext();
+  const { getSingleNews, singleNews, editNews, loading } =
+    useNewsGlobalContext();
 
   const { newsId } = useParams();
 
@@ -228,6 +229,7 @@ function EditNews() {
                         disableElevation
                         variant="contained"
                         color="primary"
+                        disabled={loading}
                         sx={{
                           background: "#5e0001",
                           border: "1px solid #fff",
@@ -237,7 +239,7 @@ function EditNews() {
                             border: "1px solid #5e0001",
                           },
                         }}>
-                        Edit News
+                        {loading ? "Please wait..." : "Edit News"}
                       </Button>
                     </form>
                   </Grid>
