@@ -32,7 +32,7 @@ const validationSchema = Yup.object({
 
 function AddGallery() {
   const [imageURL, setImageURL] = useState(null);
-  const { addGallery } = useGalleryGlobalContext();
+  const { addGallery, loading } = useGalleryGlobalContext();
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -175,6 +175,7 @@ function AddGallery() {
                         type="submit"
                         disableElevation
                         variant="contained"
+                        disabled={loading}
                         color="primary"
                         sx={{
                           background: "#5e0001",
@@ -185,7 +186,7 @@ function AddGallery() {
                             border: "1px solid #5e0001",
                           },
                         }}>
-                        Add Image
+                        {loading ? "Please wait..." : " Add Image"}
                       </Button>
                     </form>
                   </Grid>

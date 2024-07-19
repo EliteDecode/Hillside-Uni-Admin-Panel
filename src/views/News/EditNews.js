@@ -23,6 +23,8 @@ import { UploadFile } from "@mui/icons-material";
 import { useNewsGlobalContext } from "context/newsContext";
 import { useParams } from "react-router-dom";
 import DisplayCards from "components/DisplayCards";
+import { Editor } from "primereact/editor";
+import { API_URL } from "context/api";
 
 const validationSchema = Yup.object({
   title: Yup.string(),
@@ -40,16 +42,14 @@ function EditNews() {
 
   const { newsId } = useParams();
 
-  console.log(
-    `${process.env.REACT_APP_API_URL}/uploads/images/${singleNews?.image}`
-  );
+  console.log(`${API_URL}/uploads/images/${singleNews?.image}`);
 
   useEffect(() => {
     getSingleNews(newsId);
   }, []);
   console.log(singleNews);
 
-  const img = `${process.env.REACT_APP_API_URL}/uploads/images/${singleNews?.image}`;
+  const img = `${API_URL}/uploads/images/${singleNews?.image}`;
 
   const formik = useFormik({
     initialValues: {
@@ -116,23 +116,19 @@ function EditNews() {
                       />
 
                       <FormControl fullWidth>
-                        <TextareaAutosize
-                          minRows={5} // You can adjust the number of rows as needed
-                          placeholder={singleNews?.description}
-                          id="description"
-                          name="description"
-                          value={
-                            formik.values.description || singleNews?.description
-                          }
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          className={
-                            formik.touched.description &&
-                            formik.errors.description
-                              ? "error border p-3" // You can define a CSS class for error styling
-                              : "border p-3"
-                          }
-                        />
+                        <div className="card">
+                          <Editor
+                            placeholder="Description"
+                            value={
+                              formik.values.description ||
+                              singleNews?.description
+                            }
+                            onTextChange={(e) =>
+                              formik.setFieldValue("description", e.htmlValue)
+                            }
+                            style={{ height: "320px" }}
+                          />
+                        </div>
                         {formik.touched.description &&
                           formik.errors.description && (
                             <FormHelperText className="text-red-400">

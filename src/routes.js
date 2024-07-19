@@ -7,6 +7,7 @@ import Settings from "views/Settings";
 import Logout from "views/Logout";
 import Gallery from "views/Gallery/Gallery";
 import Staff from "views/Staff/Staff";
+import Student from "views/Student/Student";
 
 var routes = [
   {
@@ -51,6 +52,13 @@ var routes = [
     name: "Staffs",
     icon: "fa fa-user-md",
     component: <Staff />,
+    layout: "/admin",
+  },
+  {
+    path: "/student",
+    name: "Students",
+    icon: "fa fa-user",
+    component: <Student />,
     layout: "/admin",
   },
   {

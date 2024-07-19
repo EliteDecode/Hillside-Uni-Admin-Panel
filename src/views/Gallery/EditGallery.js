@@ -22,6 +22,7 @@ import { UploadFile } from "@mui/icons-material";
 import { useGalleryGlobalContext } from "context/galleryContext";
 import { useParams } from "react-router-dom";
 import DisplayCards from "components/DisplayCards";
+import { API_URL } from "context/api";
 
 const validationSchema = Yup.object({
   title: Yup.string(),
@@ -37,9 +38,7 @@ function EditGallery() {
 
   const { galleryId } = useParams();
 
-  console.log(
-    `${process.env.REACT_APP_API_URL}/uploads/images/${singleGallery?.image}`
-  );
+  console.log(`${API_URL}/uploads/images/${singleGallery?.image}`);
 
   console.log(singleGallery);
 
@@ -47,7 +46,7 @@ function EditGallery() {
     getSingleGallery(galleryId);
   }, []);
 
-  const img = `${process.env.REACT_APP_API_URL}/uploads/images/${singleGallery?.image}`;
+  const img = `${API_URL}/uploads/images/${singleGallery?.image}`;
 
   const formik = useFormik({
     initialValues: {

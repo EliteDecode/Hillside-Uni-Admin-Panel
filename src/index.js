@@ -18,33 +18,38 @@ import { NewsProvider } from "context/newsContext";
 import { CalenderProvider } from "context/calenderContext";
 import { GalleryProvider } from "context/galleryContext";
 import { StaffProvider } from "context/staffContext";
+import { PrimeReactProvider, PrimeReactContext } from "primereact/api";
+import { StudentProvider } from "context/studentContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <BrowserRouter>
-    <AuthProvider>
-      <StaffProvider>
-        <EventProvider>
-          <NewsProvider>
-            <CalenderProvider>
-              <GalleryProvider>
-                <Routes>
-                  <Route element={<ProtectedRoutes />}>
-                    <Route path="/admin/*" element={<AdminLayout />} />
-                    <Route
-                      path="/"
-                      element={<Navigate to="/admin/dashboard" replace />}
-                    />
-                  </Route>
-
-                  <Route path="/login" element={<Login />} />
-                </Routes>
-              </GalleryProvider>
-            </CalenderProvider>
-          </NewsProvider>
-        </EventProvider>
-      </StaffProvider>
-    </AuthProvider>
+    <PrimeReactProvider>
+      <AuthProvider>
+        <StaffProvider>
+          <EventProvider>
+            <NewsProvider>
+              <CalenderProvider>
+                <GalleryProvider>
+                  <StudentProvider>
+                    <Routes>
+                      <Route element={<ProtectedRoutes />}>
+                        <Route path="/admin/*" element={<AdminLayout />} />
+                        <Route
+                          path="/"
+                          element={<Navigate to="/admin/dashboard" replace />}
+                        />
+                      </Route>
+                      <Route path="/login" element={<Login />} />
+                    </Routes>
+                  </StudentProvider>
+                </GalleryProvider>
+              </CalenderProvider>
+            </NewsProvider>
+          </EventProvider>
+        </StaffProvider>
+      </AuthProvider>
+    </PrimeReactProvider>
   </BrowserRouter>
 );

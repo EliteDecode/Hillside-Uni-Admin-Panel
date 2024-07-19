@@ -1,23 +1,37 @@
 import React, { useEffect, useRef, useState } from "react";
+import "../../assets/css/staff.css";
 import Header from "../../components/Header";
 import SendIcon from "@mui/icons-material/Send";
 import { Card, CardBody, Row, Col } from "reactstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { UploadFile } from "@mui/icons-material";
-import { useNewsGlobalContext } from "context/newsContext";
+import { usePDF } from "react-to-pdf";
+
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import JsPDF from "jspdf";
 import domtoimage from "dom-to-image";
 import { useStaffGlobalContext } from "context/staffContext";
 import axios from "axios";
+import DeclineIdCardModal from "components/Modals/DeclineIdCardModal";
+import { API_URL } from "context/api";
 
 function ViewStaff() {
-  const { getSingleStaff, singleStaff, loading, updateStaff, staff, getStaff } =
-    useStaffGlobalContext();
+  const {
+    getSingleStaff,
+    singleStaff,
+    loading,
+    updateStaff,
+    staff,
+    getStaff,
+    declineStaffid,
+  } = useStaffGlobalContext();
+  const [message, setMessage] = useState();
   const [loader, setLoader] = useState(false);
+  const [openDeclineModal, setOpenDeclineModal] = React.useState(false);
+  const handleOpenDeclineModal = () => setOpenDeclineModal(true);
+  const handleCloseDeclineModal = () => setOpenDeclineModal(false);
 
   const staffApproved = staff?.filter(
     (singleStaff) => singleStaff.Approved == 1
@@ -28,7 +42,7 @@ function ViewStaff() {
   const { staffId } = useParams();
 
   const qrCode = `https://online.hust.edu.ng/OESWebApp/images/code/${singleStaff?.qrcode}`;
-  const img = `${process.env.REACT_APP_API_URL}/uploads/staffProfile/${singleStaff?.profilePicture}`;
+  const img = `${API_URL}/uploads/idProfile/${singleStaff?.profilePicture}`;
 
   const pdfRef = useRef();
   const downloadPdfDocument = () => {
@@ -64,6 +78,10 @@ function ViewStaff() {
       };
     });
   };
+
+  const { toPDF, targetRef } = usePDF({
+    filename: `Staff_${singleStaff?.firstname}_${singleStaff?.lastname}.pdf`,
+  });
 
   const IdCardDetails = [
     {
@@ -218,6 +236,15 @@ function ViewStaff() {
     }
   };
 
+  const handleDecline = () => {
+    const data = {
+      staffId,
+      message,
+    };
+    handleCloseDeclineModal();
+    declineStaffid(data);
+  };
+
   useEffect(() => {
     getSingleStaff(staffId);
     getStaff();
@@ -225,6 +252,12 @@ function ViewStaff() {
 
   return (
     <>
+      <DeclineIdCardModal
+        openDeclineModal={openDeclineModal}
+        handleCloseDeclineModal={handleCloseDeclineModal}
+        handleDecline={handleDecline}
+        setMessage={setMessage}
+      />
       <div className="content">
         <Row>
           <Col md="12">
@@ -287,6 +320,27 @@ function ViewStaff() {
                                 ? "Please wait..."
                                 : "Approve Staff ID"}
                             </Button>
+
+                            <Button
+                              onClick={handleOpenDeclineModal}
+                              disableElevation
+                              disabled={loading || loadingOes}
+                              variant="contained"
+                              color="primary"
+                              sx={{
+                                background: "#fff",
+                                color: "#5e0001",
+                                border: "1px solid #5e0001",
+                                "&:hover": {
+                                  background: "#5e0001",
+                                  color: "#fff",
+                                  border: "1px solid #5e0001",
+                                },
+                              }}>
+                              {loading || loadingOes
+                                ? "Please wait..."
+                                : "Decline Staff ID"}
+                            </Button>
                           </Box>
                         )}
 
@@ -324,8 +378,8 @@ function ViewStaff() {
                         <Grid item sm={12} md={12} className="bg-white">
                           <div
                             id="idpdf"
-                            ref={pdfRef}
-                            className="bg-white p-4 mb-4">
+                            ref={targetRef}
+                            className="bg-white mb-4">
                             <div className="flex items-center flex-wrap space-y-2 sm:space-x-4 space-x-0">
                               <div className="idcard border">
                                 <div className="faintLogo">
@@ -354,8 +408,8 @@ function ViewStaff() {
                                     <div className="img">
                                       <img src={img} alt="" />
                                     </div>
-                                    <div className="staff">
-                                      <p>STAFF</p>
+                                    <div className="staff relative">
+                                      <p className=" top-1 absolute">STAFF</p>
                                     </div>
                                   </div>
                                   <div className="details">
@@ -386,7 +440,7 @@ function ViewStaff() {
                                             singleStaff?.signature
                                           )}
                                           alt=""
-                                          className="w-[30%]"
+                                          className="w-[15%] mt-5"
                                         />
                                         <h5>Staff Signature</h5>
                                       </div>
@@ -405,9 +459,9 @@ function ViewStaff() {
                               </div>
 
                               {/* Back of card */}
-                              <div className="flex flex-col items-center justify-center relative">
+                              {/* <div className="flex flex-col items-center justify-center relative">
                                 <div className="h-[470px] w-[280px] border p-3">
-                                  {/* Header */}
+                                 
                                   <div className="absolute h-[450px] w-[270px] top-[100px]">
                                     <img
                                       src={require("../../assets/img/faintLogo.png")}
@@ -493,7 +547,7 @@ function ViewStaff() {
                                     <h5>President/Vice-Chancellor</h5>
                                   </div>
                                 </div>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                         </Grid>
@@ -506,7 +560,9 @@ function ViewStaff() {
                     <button
                       className="py-2 m-3 px-6 bg-[#5e0001] text-white rounded-md"
                       disabled={loader}
-                      onClick={downloadPdfDocument}>
+                      onClick={() => {
+                        toPDF();
+                      }}>
                       {loader ? "Please wait..." : "Download ID Card"}
                     </button>
                   </Box>

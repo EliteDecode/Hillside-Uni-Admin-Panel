@@ -22,6 +22,7 @@ import { UploadFile } from "@mui/icons-material";
 import { useEventGlobalContext } from "context/eventsContext";
 import { useParams } from "react-router-dom";
 import DisplayCards from "components/DisplayCards";
+import { API_URL } from "context/api";
 
 const validationSchema = Yup.object({
   title: Yup.string(),
@@ -37,15 +38,13 @@ function EditEvents() {
   const { getSingleEvents, event, editEvents } = useEventGlobalContext();
 
   const { eventId } = useParams();
-  console.log(
-    `${process.env.REACT_APP_API_URL}/uploads/images/${event?.image}`
-  );
+  console.log(`${API_URL}/uploads/images/${event?.image}`);
 
   useEffect(() => {
     getSingleEvents(eventId);
   }, []);
 
-  const img = `${process.env.REACT_APP_API_URL}/uploads/images/${event?.image}`;
+  const img = `${API_URL}/uploads/images/${event?.image}`;
 
   const formik = useFormik({
     initialValues: {

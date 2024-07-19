@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { API_URL } from "./api";
 import { useNavigate } from "react-router-dom";
 
 const AppContext = React.createContext();
@@ -32,7 +33,7 @@ const CalenderProvider = ({ children }) => {
 
     try {
       const data = await axios.post(
-        `${process.env.REACT_APP_API_URL}/academic-calender/${admin.data.id}`,
+        `${API_URL}/academic-calender/${admin.data.id}`,
         admindata,
         config
       );
@@ -60,7 +61,7 @@ const CalenderProvider = ({ children }) => {
     setLoading(true);
     try {
       const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/academic-calender/published-academic-calender`
+        `${API_URL}/academic-calender/published-academic-calender`
       );
       setCalender(data?.data);
       setLoading(false);
@@ -79,7 +80,7 @@ const CalenderProvider = ({ children }) => {
     setLoading(true);
     try {
       const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/academic-calender/published-academic-calender/${year}`
+        `${API_URL}/academic-calender/published-academic-calender/${year}`
       );
       setCalenderYear(data?.data);
       setLoading(false);
@@ -97,9 +98,7 @@ const CalenderProvider = ({ children }) => {
   const getSingleCalender = async (id) => {
     setLoading(true);
     try {
-      const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/academic-calender/${id}`
-      );
+      const data = await axios.get(`${API_URL}/academic-calender/${id}`);
       setSingleCalender(data.data[0]);
       setLoading(false);
 
@@ -122,7 +121,7 @@ const CalenderProvider = ({ children }) => {
     console.log("we are here");
     try {
       const data = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/academic-calender/delete-academic-calender/${calenderYear}/${admin.data.id}`,
+        `${API_URL}/academic-calender/delete-academic-calender/${calenderYear}/${admin.data.id}`,
 
         config
       );
@@ -153,7 +152,7 @@ const CalenderProvider = ({ children }) => {
     console.log("we are here");
     try {
       const data = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/academic-calender/delete-academic-calender-category/${calenderId}/${admin.data.id}`,
+        `${API_URL}/academic-calender/delete-academic-calender-category/${calenderId}/${admin.data.id}`,
 
         config
       );
@@ -182,7 +181,7 @@ const CalenderProvider = ({ children }) => {
 
     try {
       const data = await axios.put(
-        `${process.env.REACT_APP_API_URL}/academic-calender/edit-academic-calender/${calenderId}/${admin.data.id}`,
+        `${API_URL}/academic-calender/edit-academic-calender/${calenderId}/${admin.data.id}`,
         calenderData,
         config
       );

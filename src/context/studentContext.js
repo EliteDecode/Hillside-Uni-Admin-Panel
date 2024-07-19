@@ -8,10 +8,10 @@ import { API_URL } from "./api";
 
 const AppContext = React.createContext();
 
-const EventProvider = ({ children }) => {
+const StudentProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
-  const [events, setEvents] = useState(null);
-  const [event, setEvent] = useState(null);
+  const [student, setStudent] = useState(null);
+  const [singleStudent, setSingleStudent] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -21,9 +21,8 @@ const EventProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const addEvents = async (admindata) => {
-    console.log(admin?.token);
-
+  const getStudent = async () => {
+    setLoading(true);
     const config = {
       headers: {
         Authorization: `Bearer ${admin?.token}`,
@@ -31,37 +30,8 @@ const EventProvider = ({ children }) => {
     };
 
     try {
-      const data = await axios.post(
-        `${API_URL}/events/${admin.data.id}`,
-        admindata,
-        config
-      );
-
-      if (data) {
-        toast.success("Events added successfully", {
-          onClose: () => {
-            navigate("/admin/events");
-            // console.log("he");
-          },
-        });
-
-        console.log(data);
-
-        return data;
-      }
-    } catch (error) {
-      // Display an error toast
-      toast.error(error?.response?.data.error);
-      toast.error(error?.message);
-      toast.error(error?.response?.data?.message);
-    }
-  };
-
-  const getEvents = async () => {
-    setLoading(true);
-    try {
-      const data = await axios.get(`${API_URL}/events/published-events`);
-      setEvents(data?.data);
+      const data = await axios.get(`${API_URL}/student`, config);
+      setStudent(data?.data);
       setLoading(false);
 
       return data;
@@ -74,12 +44,13 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const getSingleEvents = async (id) => {
+  const getSingleStudent = async (id) => {
     setLoading(true);
     try {
-      const data = await axios.get(`${API_URL}/events/${id}`);
-      setEvent(data.data[0]);
+      const data = await axios.get(`${API_URL}/student/${id}`);
+      setSingleStudent(data.data.data);
       setLoading(false);
+      console.log(data);
 
       return data;
     } catch (error) {
@@ -89,38 +60,8 @@ const EventProvider = ({ children }) => {
     }
   };
 
-  const deleteSingleEvents = async (eventId) => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${admin?.token}`,
-      },
-    };
-
+  const updateStudent = async (value) => {
     setLoading(true);
-    console.log("we are here");
-    try {
-      const data = await axios.delete(
-        `${API_URL}/events/delete-events/${eventId}/${admin.data.id}`,
-
-        config
-      );
-
-      if (data) {
-        toast.success("Events updated successfully", {
-          onClose: () => {
-            window.location.reload();
-            setLoading(false);
-          },
-        });
-      }
-    } catch (error) {
-      setLoading(false);
-      toast.error(error?.response?.data.error);
-      toast.error(error?.response?.data?.message);
-    }
-  };
-
-  const editEvents = async (eventData, eventId) => {
     const config = {
       headers: {
         Authorization: `Bearer ${admin?.token}`,
@@ -129,27 +70,53 @@ const EventProvider = ({ children }) => {
 
     try {
       const data = await axios.put(
-        `${API_URL}/events/edit-events/${eventId}/${admin.data.id}`,
-        eventData,
+        `${API_URL}/student/update/${value.studentId}`,
+        value,
         config
       );
-
-      console.log(data);
-      // Check if the login was successful
-      // Check if the login was successful
       if (data) {
-        toast.success("Events deleted successfully", {
+        setLoading(false);
+        toast.success("Student Id approved successfully", {
           onClose: () => {
-            navigate("/admin/dashboard");
+            navigate("/admin/student");
           },
         });
-
-        console.log(data);
-
         return data;
       }
     } catch (error) {
       // Display an error toast
+      setLoading(false);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  const declineStudentid = async (value) => {
+    setLoading(true);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${admin?.token}`,
+      },
+    };
+
+    try {
+      const data = await axios.put(
+        `${API_URL}/student/update/declineId/${value.studentId}`,
+        value,
+        config
+      );
+      if (data) {
+        setLoading(false);
+        toast.info("Student Id declined successfully", {
+          onClose: () => {
+            navigate("/admin/student");
+          },
+        });
+        return data;
+      }
+    } catch (error) {
+      // Display an error toast
+      setLoading(false);
       toast.error(error?.response?.data.error);
       toast.error(error?.response?.data?.message);
     }
@@ -158,14 +125,13 @@ const EventProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        addEvents,
-        getSingleEvents,
-        getEvents,
-        editEvents,
-        deleteSingleEvents,
-        events,
+        getSingleStudent,
+        getStudent,
+        updateStudent,
+        declineStudentid,
+        student,
         loading,
-        event,
+        singleStudent,
       }}>
       {children}
       <ToastContainer />
@@ -173,8 +139,8 @@ const EventProvider = ({ children }) => {
   );
 };
 
-export const useEventGlobalContext = () => {
+export const useStudentGlobalContext = () => {
   return useContext(AppContext);
 };
 
-export { AppContext, EventProvider };
+export { AppContext, StudentProvider };

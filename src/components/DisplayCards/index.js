@@ -6,7 +6,13 @@ const DisplayCards = ({ title, description, date, isPublished, img, id }) => {
       <img src={img} alt="Selected" width={id ? "60%" : "100%"} />
       <div className="">
         <h2 className="text-xl font-semibold">{title}</h2>
-        <p className="text-gray-600 text-[20px] mt-2">{description}</p>
+        <div
+          className="text-gray-600 text-[20px] mt-2"
+          dangerouslySetInnerHTML={{
+            __html: description,
+          }}
+        />
+
         {date && (
           <p className="text-gray-500 text-sm mt-2 font-bold">
             {id ? "Date of Application" : "Date"}:{" "}

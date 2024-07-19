@@ -4,6 +4,8 @@ import SendIcon from "@mui/icons-material/Send";
 import { Card, CardBody, Row, Col } from "reactstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { Editor } from "primereact/editor";
+
 import {
   TextField,
   Button,
@@ -95,21 +97,17 @@ function AddNews() {
                       />
 
                       <FormControl fullWidth>
-                        <TextareaAutosize
-                          minRows={5} // You can adjust the number of rows as needed
-                          placeholder="Description"
-                          id="description"
-                          name="description"
-                          value={formik.values.description}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          className={
-                            formik.touched.description &&
-                            formik.errors.description
-                              ? "error border p-3" // You can define a CSS class for error styling
-                              : "border p-3"
-                          }
-                        />
+                        <div className="card">
+                          <Editor
+                            placeholder="Description"
+                            value={formik.values.description}
+                            onTextChange={(e) =>
+                              formik.setFieldValue("description", e.htmlValue)
+                            }
+                            style={{ height: "320px" }}
+                          />
+                        </div>
+
                         {formik.touched.description &&
                           formik.errors.description && (
                             <FormHelperText className="text-red-400">

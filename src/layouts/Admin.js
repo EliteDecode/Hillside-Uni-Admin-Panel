@@ -21,6 +21,7 @@ import AddGallery from "views/Gallery/AddGallery";
 import EditGallery from "views/Gallery/EditGallery";
 import ViewStaff from "views/Staff/ViewStaff";
 import { useAuthGlobalContext } from "context/authContext";
+import ViewStudent from "views/Student/ViewStudent";
 
 var ps;
 
@@ -90,6 +91,7 @@ function Dashboard(props) {
           <Route path="/events/:eventId" element={<EditEvents />} />
           <Route path="/news/add-news" element={<AddNews />} />
           <Route path="/staff/:staffId" element={<ViewStaff />} />
+          <Route path="/student/:studentId" element={<ViewStudent />} />
           <Route path="/news/:newsId" element={<EditNews />} />
           <Route path="/calender/:year" element={<ViewCalender />} />
           <Route path="/calender/add-calender" element={<AddCalender />} />

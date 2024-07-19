@@ -1,43 +1,28 @@
 import React, { useEffect } from "react";
 import Header from "../../components/Header";
-import { Card, CardHeader, CardBody, CardTitle, Row, Col } from "reactstrap";
+import { Card, CardBody, Row, Col } from "reactstrap";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Button } from "@mui/material";
-import { Add, RemoveRedEye } from "@mui/icons-material";
+import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
-import CustomeBtn from "components/FixedPlugin/CustomeBtn";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Loader from "../../components/Loader";
 import NotFound from "../../components/NotFound";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { useStaffGlobalContext } from "context/staffContext";
+import { useStudentGlobalContext } from "context/studentContext";
 
-function Staff() {
-  const { staff, loading, getStaff, getSingleStaff } = useStaffGlobalContext();
+function Student() {
+  const { student, loading, getStudent, getSingleStudent } =
+    useStudentGlobalContext();
 
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = (id) => {
-    setOpen({ ...open, [id]: true });
-  };
-
-  const handleClose = (id) => {
-    setOpen({ ...open, [id]: false });
-  };
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
     { field: "firstname", headerName: "Firstname", width: 155 },
     { field: "lastname", headerName: "Lastname", width: 155 },
-    { field: "email", headerName: "Email", width: 155 },
-    { field: "staffId", headerName: "Staff ID", width: 155 },
-    { field: "sex", headerName: "Sex", width: 135 },
-    { field: "phone", headerName: "Phone", width: 155 },
-    { field: "rolename", headerName: "Role", width: 155 },
+    { field: "email", headerName: "Email", width: 185 },
+    { field: "matricNumber", headerName: "Matri Number", width: 185 },
+    { field: "sex", headerName: "Gender", width: 135 },
+
     {
       field: "Approved",
       headerName: "Status",
@@ -95,7 +80,7 @@ function Staff() {
   ];
 
   useEffect(() => {
-    getStaff();
+    getStudent();
   }, []);
 
   return (
@@ -103,7 +88,7 @@ function Staff() {
       <div className="content">
         <Row>
           <Col md="12">
-            <Header title="All Staffs" />
+            <Header title="All Students" />
 
             <Card className="demo-icons">
               <CardBody className="all-icons">
@@ -111,16 +96,17 @@ function Staff() {
                   <Loader />
                 ) : (
                   <>
-                    {!staff ? (
+                    {!student ? (
                       <NotFound />
                     ) : (
                       <DataGrid
-                        rows={staff ? staff : []}
+                        rows={student ? student : []}
+                        sortingMode="client"
                         columns={columns}
                         initialState={{
                           pagination: {
                             paginationModel: {
-                              pageSize: 5,
+                              pageSize: 10,
                             },
                           },
                         }}
@@ -140,4 +126,4 @@ function Staff() {
   );
 }
 
-export default Staff;
+export default Student;

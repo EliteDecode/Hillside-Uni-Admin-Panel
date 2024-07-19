@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { API_URL } from "./api";
 import { useNavigate } from "react-router-dom";
 
 const AppContext = React.createContext();
@@ -31,7 +32,7 @@ const NewsProvider = ({ children }) => {
 
     try {
       const data = await axios.post(
-        `${process.env.REACT_APP_API_URL}/news/${admin.data.id}`,
+        `${API_URL}/news/${admin.data.id}`,
         admindata,
         config
       );
@@ -60,9 +61,7 @@ const NewsProvider = ({ children }) => {
   const getNews = async () => {
     setLoading(true);
     try {
-      const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/news/published-news`
-      );
+      const data = await axios.get(`${API_URL}/news/published-news`);
       setNews(data?.data);
       setLoading(false);
       console.log(data);
@@ -80,9 +79,7 @@ const NewsProvider = ({ children }) => {
   const getSingleNews = async (id) => {
     setLoading(true);
     try {
-      const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/news/${id}`
-      );
+      const data = await axios.get(`${API_URL}/news/${id}`);
       setSingleNews(data.data[0]);
       setLoading(false);
 
@@ -104,7 +101,7 @@ const NewsProvider = ({ children }) => {
     setLoading(true);
     try {
       const data = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/news/delete-news/${newId}/${admin.data.id}`,
+        `${API_URL}/news/delete-news/${newId}/${admin.data.id}`,
 
         config
       );
@@ -134,7 +131,7 @@ const NewsProvider = ({ children }) => {
 
     try {
       const data = await axios.put(
-        `${process.env.REACT_APP_API_URL}/news/edit-news/${newId}/${admin.data.id}`,
+        `${API_URL}/news/edit-news/${newId}/${admin.data.id}`,
         newsData,
         config
       );

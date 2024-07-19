@@ -227,7 +227,7 @@ function Dashboard() {
                       loadingRows
                     ) : (
                       <>
-                        {calenderYear?.map((item, index) => (
+                        {calenderYear?.slice(0, 4).map((item, index) => (
                           <tr key={index}>
                             <th scope="row">{index + 1}</th>
                             <td>{item.title}</td>

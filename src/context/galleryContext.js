@@ -4,6 +4,8 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { TryOutlined } from "@mui/icons-material";
+import { API_URL } from "./api";
 
 const AppContext = React.createContext();
 
@@ -21,6 +23,7 @@ const GalleryProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const addGallery = async (admindata) => {
+    setLoading(true);
     const config = {
       headers: {
         Authorization: `Bearer ${admin?.token}`,
@@ -29,25 +32,24 @@ const GalleryProvider = ({ children }) => {
 
     try {
       const data = await axios.post(
-        `${process.env.REACT_APP_API_URL}/gallery/${admin.data.id}`,
+        `${API_URL}/gallery/${admin.data.id}`,
         admindata,
         config
       );
 
       // Check if the login was successful
       if (data) {
+        setLoading(false);
         toast.success("Image added to gallery successfully", {
           onClose: () => {
             navigate("/admin/gallery");
           },
         });
-
-        console.log(data);
-
         return data;
       }
     } catch (error) {
       // Display an error toast
+      setLoading(false);
       toast.error(error?.response?.data.error);
       toast.error(error?.response?.data?.message);
     }
@@ -56,9 +58,7 @@ const GalleryProvider = ({ children }) => {
   const getGallery = async () => {
     setLoading(true);
     try {
-      const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/gallery/published-gallery`
-      );
+      const data = await axios.get(`${API_URL}/gallery/published-gallery`);
       setGallery(data?.data);
       setLoading(false);
       console.log(data);
@@ -76,9 +76,7 @@ const GalleryProvider = ({ children }) => {
   const getSingleGallery = async (id) => {
     setLoading(true);
     try {
-      const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/gallery/${id}`
-      );
+      const data = await axios.get(`${API_URL}/gallery/${id}`);
       setSingleGallery(data.data[0]);
       setLoading(false);
       console.log(data);
@@ -102,7 +100,7 @@ const GalleryProvider = ({ children }) => {
     console.log("we are here");
     try {
       const data = await axios.delete(
-        `${process.env.REACT_APP_API_URL}/gallery/delete-gallery/${newId}/${admin.data.id}`,
+        `${API_URL}/gallery/delete-gallery/${newId}/${admin.data.id}`,
 
         config
       );
@@ -131,7 +129,7 @@ const GalleryProvider = ({ children }) => {
 
     try {
       const data = await axios.put(
-        `${process.env.REACT_APP_API_URL}/gallery/edit-gallery/${newId}/${admin.data.id}`,
+        `${API_URL}/gallery/edit-gallery/${newId}/${admin.data.id}`,
         galleryData,
         config
       );

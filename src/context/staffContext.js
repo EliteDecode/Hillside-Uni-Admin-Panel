@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { API_URL } from "./api";
 import { useNavigate } from "react-router-dom";
 
 const AppContext = React.createContext();
@@ -29,13 +30,9 @@ const StaffProvider = ({ children }) => {
     };
 
     try {
-      const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/staff`,
-        config
-      );
+      const data = await axios.get(`${API_URL}/staff`, config);
       setStaff(data?.data);
       setLoading(false);
-      console.log(data);
 
       return data;
     } catch (error) {
@@ -50,11 +47,10 @@ const StaffProvider = ({ children }) => {
   const getSingleStaff = async (id) => {
     setLoading(true);
     try {
-      const data = await axios.get(
-        `${process.env.REACT_APP_API_URL}/staff/${id}`
-      );
-      setSingleStaff(data.data[0]);
+      const data = await axios.get(`${API_URL}/staff/${id}`);
+      setSingleStaff(data.data.data);
       setLoading(false);
+      console.log(data);
 
       return data;
     } catch (error) {
@@ -74,7 +70,7 @@ const StaffProvider = ({ children }) => {
 
     try {
       const data = await axios.put(
-        `${process.env.REACT_APP_API_URL}/staff/update/${value.staffId}`,
+        `${API_URL}/staff/update/${value.staffId}`,
         value,
         config
       );
@@ -95,12 +91,44 @@ const StaffProvider = ({ children }) => {
     }
   };
 
+  const declineStaffid = async (value) => {
+    setLoading(true);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${admin?.token}`,
+      },
+    };
+
+    try {
+      const data = await axios.put(
+        `${API_URL}/staff/update/declineId/${value.staffId}`,
+        value,
+        config
+      );
+      if (data) {
+        setLoading(false);
+        toast.info("Staff Id declined successfully", {
+          onClose: () => {
+            navigate("/admin/staff");
+          },
+        });
+        return data;
+      }
+    } catch (error) {
+      // Display an error toast
+      setLoading(false);
+      toast.error(error?.response?.data.error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
         getSingleStaff,
         getStaff,
         updateStaff,
+        declineStaffid,
         staff,
         loading,
         singleStaff,
